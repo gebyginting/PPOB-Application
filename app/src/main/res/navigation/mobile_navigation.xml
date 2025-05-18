@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.mobile.pacificaagent.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_transaksi"
+        android:name="com.mobile.pacificaagent.ui.transaksi.TransaksiFragment"
+        android:label="@string/title_transaksi"
+        tools:layout="@layout/fragment_transaksi" >
+        <action
+            android:id="@+id/action_transaksiFragment_to_riwayatTransaksiFragment"
+            app:destination="@id/riwayatTransaksiFragment" >
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/riwayatTransaksiFragment"
+        android:name="com.mobile.pacificaagent.ui.transaksi.RiwayatTransaksiFragment"
+        android:label="Riwayat Transaksi"
+        tools:layout="@layout/fragment_riwayat_transaksi" >
+        <argument
+            android:name="jenisTransaksi"
+            app:argType="string" />
+        <argument
+            android:name="statusTransaksi"
+            app:argType="string" />
+        <argument
+            android:name="namaTransaksi"
+            app:argType="string" />
+        <argument
+            android:name="nominalTransaksi"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.mobile.pacificaagent.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" >
+    </fragment>
+
+    <!--    fragment pulsa dan data paket-->
+    <fragment
+        android:id="@+id/pulsaDataFragment"
+        android:name="com.mobile.pacificaagent.ui.pulsadata.PulsaDataFragment"
+        android:label="Pulsa dn Data"
+        tools:layout="@layout/fragment_pulsa_data" >
+        <action
+            android:id="@+id/action_pulsaDataFragment_to_konfirmasiPulsaFragment"
+            app:destination="@id/konfirmasiPulsaFragment" />
+    </fragment>
+
+    <!--    fragment token listrik-->
+    <fragment
+        android:id="@+id/tokenListrikFragment"
+        android:name="com.mobile.pacificaagent.ui.tokenListrik.TokenListrikFragment"
+        android:label="Token Listrik"
+        tools:layout="@layout/fragment_token_listrik" >
+        <action
+            android:id="@+id/action_tokenListrikFragment_to_konfirmasiTokenFragment"
+            app:destination="@id/konfirmasiTokenFragment" />
+    </fragment>
+
+    <!--    fragment tagihan internet-->
+    <fragment
+        android:id="@+id/internetPilihFragment"
+        android:name="com.mobile.pacificaagent.ui.tagihanInternet.InternetPilihFragment"
+        android:label="Internet Pilih"
+        tools:layout="@layout/fragment_internet_pilih" >
+        <action
+            android:id="@+id/action_internetPilihFragment_to_internetCekTagihanFragment"
+            app:destination="@id/internetCekTagihanFragment" >
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/internetCekTagihanFragment"
+        android:name="com.mobile.pacificaagent.ui.tagihanInternet.InternetCekTagihanFragment"
+        android:label="Cek Tagihan Internet"
+        tools:layout="@layout/fragment_internet_cek_tagihan" >
+        <action
+            android:id="@+id/action_internetCekTagihanFragment_to_konfirmasiWifiFragment"
+            app:destination="@id/konfirmasiWifiFragment" >
+        </action>
+        <argument
+            android:name="namaProvider"
+            app:argType="string" />
+    </fragment>
+
+    <!--    fragment e-wallet-->
+    <fragment
+        android:id="@+id/eWalletPilihFragment"
+        android:name="com.mobile.pacificaagent.ui.e_wallet.EWalletPilihFragment"
+        android:label="E-Wallet Pilih"
+        tools:layout="@layout/fragment_e_wallet_pilih" >
+        <action
+            android:id="@+id/action_eWalletPilihFragment_to_eWalletNominalFragment"
+            app:destination="@id/eWalletNominalFragment" >
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/eWalletNominalFragment"
+        android:name="com.mobile.pacificaagent.ui.e_wallet.EWalletNominalFragment"
+        android:label="E-Wallet Nominal"
+        tools:layout="@layout/fragment_e_wallet_nominal">
+        <action
+            android:id="@+id/action_eWalletNominalFragment_to_konfirmasiEWalletFragment"
+            app:destination="@id/konfirmasiEWalletFragment" >
+        </action>
+        <argument
+            android:name="namaEWallet"
+            app:argType="string" />
+    </fragment>
+
+    <!--    fragment Konfirmasi-->
+    <fragment
+        android:id="@+id/konfirmasiPulsaFragment"
+        android:name="com.mobile.pacificaagent.ui.pulsadata.KonfirmasiPulsaFragment"
+        android:label="Konfirmasi Pulsa"
+        tools:layout="@layout/fragment_konfirmasi_pulsa" >
+        <argument
+            android:name="nama"
+            app:argType="string" />
+        <argument
+            android:name="harga"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/konfirmasiWifiFragment"
+        android:name="com.mobile.pacificaagent.ui.tagihanInternet.KonfirmasiWifiFragment"
+        android:label="Konfirmasi Wifi"
+        tools:layout="@layout/fragment_konfirmasi_wifi" >
+        <argument
+            android:name="namaProvider"
+            app:argType="string" />
+        <argument
+            android:name="hargaTagihan"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/konfirmasiTokenFragment"
+        android:name="com.mobile.pacificaagent.ui.tokenListrik.KonfirmasiTokenFragment"
+        android:label="Konfirmasi Token"
+        tools:layout="@layout/fragment_konfirmasi_token" >
+        <argument
+            android:name="nomorMeter"
+            app:argType="string" />
+        <argument
+            android:name="namaProduk"
+            app:argType="string" />
+        <argument
+            android:name="hargaProduk"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/konfirmasiEWalletFragment"
+        android:name="com.mobile.pacificaagent.ui.e_wallet.KonfirmasiEWalletFragment"
+        android:label="Konfirmasi EWallet"
+        tools:layout="@layout/fragment_konfirmasi_e_wallet" >
+        <argument
+            android:name="nomor"
+            app:argType="string" />
+        <argument
+            android:name="namaProduk"
+            app:argType="string" />
+        <argument
+            android:name="hargaProduk"
+            app:argType="string" />
+    </fragment>
+
+
+    <!--    fragment TopUp Saldo-->
+    <fragment
+        android:id="@+id/topUpNominalSaldoFragment"
+        android:name="com.mobile.pacificaagent.ui.topupsaldo.TopUpNominalSaldoFragment"
+        android:label="Top Up Minimal Saldo"
+        tools:layout="@layout/fragment_top_up_nominal_saldo" >
+        <action
+            android:id="@+id/action_topUpNominalSaldoFragment_to_topUpPilihPembayaranFragment"
+            app:destination="@id/topUpPilihPembayaranFragment" >
+        </action>
+
+        <action
+            android:id="@+id/action_topUpNominalSaldoFragment_to_topUpSaldoPembayaranFragment"
+            app:destination="@id/topUpSaldoPembayaranFragment" >
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/topUpPilihPembayaranFragment"
+        android:name="com.mobile.pacificaagent.ui.topupsaldo.TopUpPilihPembayaranFragment"
+        android:label="Top Up Pilih Pembayaran"
+        tools:layout="@layout/fragment_top_up_pilih_pembayaran" >
+
+        <argument
+            android:name="nominal"
+            app:argType="float" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/topUpSaldoPembayaranFragment"
+        android:name="com.mobile.pacificaagent.ui.topupsaldo.TopUpSaldoPembayaranFragment"
+        android:label="Top Up Saldo Pembayaran"
+        tools:layout="@layout/fragment_top_up_saldo_pembayaran" >
+        <argument
+            android:name="nominal"
+            app:argType="float" />
+        <argument
+            android:name="logoBank"
+            app:argType="integer" />
+    </fragment>
+
+<!--    Profile-->
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.mobile.pacificaagent.ui.profile.EditProfileFragment"
+        android:label="Edit Profile"
+        tools:layout="@layout/fragment_edit_profile" />
+</navigation>

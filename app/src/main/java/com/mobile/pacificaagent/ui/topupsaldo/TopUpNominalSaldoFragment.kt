@@ -1,0 +1,93 @@
+package com.mobile.pacificaagent.ui.topupsaldo
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import com.mobile.pacificaagent.data.adapter.ItemAdapter
+import com.mobile.pacificaagent.data.model.Item
+import com.mobile.pacificaagent.databinding.FragmentTopUpNominalSaldoBinding
+
+
+class TopUpNominalSaldoFragment : Fragment() {
+
+    private var _binding: FragmentTopUpNominalSaldoBinding? = null
+    private val binding get() = _binding!!
+    private var nominal: Float = 0f
+
+    private val pilihanNominal = listOf(
+        Item("10.000"),
+        Item("50.000"),
+        Item("100.000"),
+        Item("250.000"),
+        Item("500.000"),
+        Item("1.000.000"),
+    )
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+
+        _binding = FragmentTopUpNominalSaldoBinding.inflate(inflater, container, false)
+        val view = binding.root
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupPilihanNominal()
+        setupDepositButton()
+        showValidasiPembayaran()
+        handleLanjutPembayaran()
+    }
+
+    private fun setupPilihanNominal() {
+        val adapter = ItemAdapter(pilihanNominal, showHarga = false, enableSelection = true) { selectedItem ->
+            nominal = selectedItem.nama.toFloat()
+        }
+        binding.rvItem.layoutManager = GridLayoutManager(requireContext(), 3)
+        binding.rvItem.adapter = adapter
+    }
+
+    private fun setupDepositButton() {
+        binding.pilihPembayaranBtn.setOnClickListener {
+            val action = TopUpNominalSaldoFragmentDirections
+                .actionTopUpNominalSaldoFragmentToTopUpPilihPembayaranFragment(nominal)
+            findNavController().navigate(action)
+        }
+    }
+    private fun showValidasiPembayaran() {
+        findNavController().currentBackStackEntry?.savedStateHandle?.let { handle ->
+            handle.getLiveData<String>("nominal").observe(viewLifecycleOwner) { nominal ->
+                val logoBank = handle.get<Int>("logoBank")
+                val metode = handle.get<String>("metode")
+                if (metode != null) {
+                    val bottomSheet = logoBank?.let { ValidasiDepositBottomSheet.newInstance(nominal.toFloat(), it, metode) }
+                    bottomSheet?.show(parentFragmentManager, "KonfirmasiBottomSheet")
+                    handle.remove<Float>("nominal")
+                    handle.remove<Int>("logoBank")
+                    handle.remove<String>("metode")
+                }
+            }
+        }
+    }
+
+    private fun handleLanjutPembayaran() {
+        parentFragmentManager.setFragmentResultListener(
+            "lanjut_ke_pembayaran", viewLifecycleOwner
+        ) { _, result ->
+            val nominal = result.getFloat("nominal")
+            val logoBank = result.getInt("logoBank")
+
+            val action = TopUpNominalSaldoFragmentDirections
+                .actionTopUpNominalSaldoFragmentToTopUpSaldoPembayaranFragment(nominal, logoBank)
+
+            findNavController().navigate(action)
+        }
+    }
+
+}
