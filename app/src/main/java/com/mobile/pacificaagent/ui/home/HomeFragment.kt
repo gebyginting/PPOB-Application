@@ -7,20 +7,22 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.PagerSnapHelper
+import autoScroll
 import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.data.adapter.PromoAdapter
-import com.mobile.pacificaagent.data.model.Promo
 import com.mobile.pacificaagent.databinding.FragmentHomeBinding
+import com.mobile.pacificaagent.utils.promoList
+
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
     private val binding get() = _binding!!
+    private var currentPosition = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,23 +72,29 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupPromo() {
-        val promoList = listOf(
-            Promo(R.drawable.ic_launcher_background),
-            Promo(R.drawable.ic_launcher_background),
-            Promo(R.drawable.ic_launcher_background),
-            Promo(R.drawable.ic_launcher_background),
-        )
-
         val adapter = PromoAdapter(promoList)
+        val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-        binding.rvPromo.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvPromo.layoutManager = layoutManager
         binding.rvPromo.adapter = adapter
 
-// Snap ke satu card saat scroll
-        val snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(binding.rvPromo)
-
+        binding.rvPromo.autoScroll(
+            scope = viewLifecycleOwner.lifecycleScope,
+            interval = 4000,
+            getItemCount = { promoList.size }
+        )
     }
+
+//    private fun setupPromo() {
+//        val adapter = PromoAdapter(promoList)
+//
+//        binding.rvPromo.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+//        binding.rvPromo.adapter = adapter
+//
+//        val snapHelper = PagerSnapHelper()
+//        snapHelper.attachToRecyclerView(binding.rvPromo)
+//
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
