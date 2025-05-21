@@ -1,6 +1,8 @@
 package com.mobile.pacificaagent
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -8,10 +10,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mobile.pacificaagent.databinding.ActivityMainBinding
+import com.mobile.pacificaagent.ui.auth.LoginActivity
+import com.mobile.pacificaagent.utils.UserPreference
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var userPreference: UserPreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        userPreference = UserPreference(this)
+        checkUser()
 
 
         val navView: BottomNavigationView = binding.navView
@@ -84,5 +91,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun checkUser() {
+        val tokenUser = userPreference.getToken()
+        Log.d("TokenUserMain:", tokenUser)
+        Log.d("TokenUserMain:", "Kosong")
+
+        if (tokenUser.isEmpty()) {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
     }
 }

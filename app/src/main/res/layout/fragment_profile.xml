@@ -112,6 +112,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvNamaPengguna"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nama Pengguna" />
@@ -152,6 +153,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvEmailPengguna"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Email" />
@@ -192,6 +194,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvNoHpPengguna"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nomor Hp"/>
@@ -231,6 +234,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvJenisKelamin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Jenis kelamin" />
@@ -271,6 +275,7 @@
                     android:textStyle="bold"/>
 
                 <TextView
+                    android:id="@+id/tvAlamatPengguna"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Alamat" />

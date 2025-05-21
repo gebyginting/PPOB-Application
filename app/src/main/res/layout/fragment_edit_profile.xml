@@ -53,6 +53,7 @@
             android:textStyle="bold" />
 
         <EditText
+            android:id="@+id/etNamaPengguna"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:textSize="16sp"
@@ -67,6 +68,7 @@
             android:textStyle="bold" />
 
         <EditText
+            android:id="@+id/etEmailPengguna"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:textSize="16sp"
@@ -83,6 +85,7 @@
             android:textStyle="bold" />
 
         <EditText
+            android:id="@+id/etNoHpPengguna"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:background="@android:drawable/editbox_background"
@@ -124,6 +127,7 @@
 
         <!-- Tombol Simpan -->
         <EditText
+            android:id="@+id/etAlamatPengguna"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background"

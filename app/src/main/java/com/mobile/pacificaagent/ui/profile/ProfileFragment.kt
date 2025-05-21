@@ -1,5 +1,6 @@
 package com.mobile.pacificaagent.ui.profile
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -11,11 +12,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.databinding.FragmentProfileBinding
+import com.mobile.pacificaagent.ui.auth.LoginActivity
+import com.mobile.pacificaagent.utils.UserPreference
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+    private lateinit var userPreference: UserPreference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,8 +35,21 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        userPreference = UserPreference(requireContext())
+        setupProfile()
         setupLayout()
         setupButtons()
+    }
+
+    private fun setupProfile() {
+        with(binding) {
+            val user = userPreference.getUser()
+            user.let {
+                tvNamaPengguna.text = user?.name
+                tvEmailPengguna.text = user?.email
+                tvNoHpPengguna.text = user?.phone
+            }
+        }
     }
 
     private fun setupLayout() {
@@ -60,8 +77,10 @@ class ProfileFragment : Fragment() {
             AlertDialog.Builder(requireContext())
                 .setTitle("Konfirmasi")
                 .setMessage("Apakah kamu yakin ingin keluar?")
-                .setPositiveButton("Oke") { dialog, _ ->
-
+                .setPositiveButton("Oke") { _, _ ->
+                    userPreference.clear()
+                    startActivity(Intent(requireContext(), LoginActivity::class.java))
+                    requireActivity().finish()
                 }
                 .setNegativeButton("Batal", null)
                 .show()

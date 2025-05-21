@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -15,6 +15,11 @@ import autoScroll
 import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.data.adapter.PromoAdapter
 import com.mobile.pacificaagent.databinding.FragmentHomeBinding
+import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.ui.auth.UserViewModel
+import com.mobile.pacificaagent.utils.Helper
+import com.mobile.pacificaagent.utils.ResultState
+import com.mobile.pacificaagent.utils.UserPreference
 import com.mobile.pacificaagent.utils.promoList
 
 
@@ -22,6 +27,10 @@ class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private lateinit var userPreference: UserPreference
+    private val userViewModel: UserViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
     private var currentPosition = 0
 
     override fun onCreateView(
@@ -29,20 +38,45 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this)[HomeViewModel::class.java]
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.tvGreeting
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        userPreference = UserPreference(requireContext())
+
+        setupUser()
         setupPromo()
         setupServiceButton()
+    }
+    private fun setupUser() {
+        val user = userPreference.getUser()
+        user.let {
+            binding.tvGreeting.text = "Hello, ${user?.name}"
+        }
+        userViewModel.getBalance()
+        observeBalanceState()
+    }
 
-        return root
+    private fun observeBalanceState() {
+        lifecycleScope.launchWhenStarted {
+            userViewModel.getBalanceState.collect { state ->
+                when (state) {
+                    is ResultState.Loading -> {
+                    }
+                    is ResultState.Success -> {
+                        val response = state.data
+                        binding.userBalance.text = Helper.formatToRupiah(response.data.balance)
+                        Toast.makeText(requireContext(), response.message, Toast.LENGTH_SHORT).show()
+                    }
+                    is ResultState.Error -> {
+                    }
+                }
+            }
+        }
     }
 
     private fun setupServiceButton() {
