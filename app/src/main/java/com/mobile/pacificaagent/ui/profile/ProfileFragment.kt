@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mobile.pacificaagent.R
+import com.mobile.pacificaagent.data.response.DataUser
 import com.mobile.pacificaagent.databinding.FragmentProfileBinding
 import com.mobile.pacificaagent.ui.auth.LoginActivity
 import com.mobile.pacificaagent.utils.UserPreference
@@ -36,19 +38,27 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         userPreference = UserPreference(requireContext())
-        setupProfile()
+
+        observeUser()  // panggil fungsi observeUser() yang rapi
         setupLayout()
         setupButtons()
     }
 
-    private fun setupProfile() {
-        with(binding) {
-            val user = userPreference.getUser()
-            user.let {
-                tvNamaPengguna.text = user?.name
-                tvEmailPengguna.text = user?.email
-                tvNoHpPengguna.text = user?.phone
+    private fun observeUser() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            userPreference.userFlow.collect { user ->
+                updateProfileUI(user)
             }
+        }
+    }
+
+    private fun updateProfileUI(user: DataUser?) {
+        with(binding) {
+            tvNamaPengguna.text = user?.name ?: "-"
+            tvEmailPengguna.text = user?.email ?: "-"
+            tvNoHpPengguna.text = user?.phone ?: "-"
+            tvJenisKelamin.text = user?.gender ?: "-"
+            tvAlamatPengguna.text = user?.address ?: "-"
         }
     }
 

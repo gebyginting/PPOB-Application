@@ -17,9 +17,9 @@ import com.mobile.pacificaagent.ui.ViewModelFactory
 import com.mobile.pacificaagent.ui.auth.UserViewModel
 import com.mobile.pacificaagent.utils.ResultState
 import com.mobile.pacificaagent.utils.UserPreference
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 class EditProfileFragment : Fragment() {
     private var _binding: FragmentEditProfileBinding? = null
@@ -65,13 +65,14 @@ class EditProfileFragment : Fragment() {
     private fun editProfile() {
         val name = binding.etNamaPengguna.text.toString().trim()
         val phone = binding.etNoHpPengguna.text.toString().trim()
-        val gender = binding.jenisKelaminDropdown.text.toString().lowercase(Locale.ROOT).trim()
+        val gender = binding.jenisKelaminDropdown.text.toString().trim()
         val address = binding.etAlamatPengguna.text.toString().trim()
 
         val request = UpdateProfileRequest(
             name = name.ifEmpty { null },
             phone = phone.ifEmpty { null },
             gender = gender.ifEmpty { null },
+            address = address.ifEmpty { null }
         )
 
         userViewModel.updateProfile(request)
@@ -82,13 +83,17 @@ class EditProfileFragment : Fragment() {
             userViewModel.updateProfileState.collectLatest { state ->
                 when (state) {
                     is ResultState.Loading -> {
-                        // Tampilkan loading jika perlu
                     }
 
                     is ResultState.Success -> {
                         userViewModel.refreshAndStoreUserProfile()
                         Toast.makeText(requireContext(), "Berhasil menyimpan profil", Toast.LENGTH_SHORT).show()
-                        findNavController().popBackStack()
+                        // Delay 1 detik supaya toast bisa kelihatan dulu
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            binding.progressBar.visibility = View.VISIBLE
+                            delay(3000)
+                            findNavController().popBackStack()
+                        }
                     }
 
                     is ResultState.Error -> {

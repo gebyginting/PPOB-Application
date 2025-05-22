@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
             when (menuItem.itemId) {
                 R.id.navigation_home -> {
                     if (currentDest == R.id.navigation_home) {
-                        navController.popBackStack(R.id.navigation_home, false)
                         true
                     } else {
                         navController.navigate(R.id.navigation_home)
@@ -49,15 +48,25 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                R.id.navigation_profile -> {
-                    if (currentDest == R.id.navigation_profile) {
-                        navController.popBackStack(R.id.navigation_profile, false)
-                        true
-                    } else {
-                        navController.navigate(R.id.navigation_profile)
-                        true
-                    }
-                }
+//                R.id.navigation_transaksi -> {
+//                    if (currentDest == R.id.navigation_transaksi) {
+//                        navController.popBackStack(R.id.navigation_transaksi, false)
+//                        true
+//                    } else {
+//                        navController.navigate(R.id.navigation_transaksi)
+//                        true
+//                    }
+//                }
+//
+//                R.id.navigation_profile -> {
+//                    if (currentDest == R.id.navigation_profile) {
+//                        navController.popBackStack(R.id.navigation_profile, false)
+//                        true
+//                    } else {
+//                        navController.navigate(R.id.navigation_profile)
+//                        true
+//                    }
+//                }
 
                 else -> {
                     androidx.navigation.ui.NavigationUI.onNavDestinationSelected(menuItem, navController)

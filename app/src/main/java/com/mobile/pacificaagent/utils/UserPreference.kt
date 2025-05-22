@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.mobile.pacificaagent.data.response.DataUser
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class UserPreference(context: Context) {
 
@@ -19,9 +21,16 @@ class UserPreference(context: Context) {
 
     private val gson = Gson()
 
+    // Backing mutable StateFlow
+    private val _userFlow = MutableStateFlow<DataUser?>(getUser())
+    // Public read-only flow
+    val userFlow: StateFlow<DataUser?> = _userFlow
+
     fun saveUser(user: DataUser) {
         val json = gson.toJson(user)
         prefs.edit().putString(KEY_USER, json).apply()
+        // Emit data terbaru supaya observer update UI
+        _userFlow.value = user
     }
 
     fun getUser(): DataUser? {
@@ -38,5 +47,7 @@ class UserPreference(context: Context) {
 
     fun clear() {
         prefs.edit().clear().apply()
+        // Emit null kalau sudah clear supaya UI juga update
+        _userFlow.value = null
     }
 }

@@ -20,5 +20,8 @@ data class UpdateProfileRequest(
 	val name: String? = null,
 
 	@field:SerializedName("username")
-	val username: String? = null
+	val username: String? = null,
+
+	@field:SerializedName("address")
+	val address: String? = null
 )
