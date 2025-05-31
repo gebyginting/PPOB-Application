@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mobile.pacificaagent.data.adapter.pager.PulsaDataPagerAdapter
 import com.mobile.pacificaagent.databinding.FragmentPulsaDataBinding
+import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.ui.viewmodel.ProdukPrabayarViewModel
 
 class PulsaDataFragment : Fragment() {
 
@@ -19,6 +23,11 @@ class PulsaDataFragment : Fragment() {
 
     private var _binding: FragmentPulsaDataBinding? = null
     private val binding get() = _binding!!
+
+    private val produkPrabayarViewModel: ProdukPrabayarViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,9 +53,24 @@ class PulsaDataFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        produkPrabayarViewModel.setPhoneNumber("")
+        getUserNumber()
         setupBackButton()
     }
 
+    private fun getUserNumber() {
+        binding.inputUserNumber.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val number = binding.inputUserNumber.text.toString()
+                if (number.isNotBlank()) {
+                    produkPrabayarViewModel.setPhoneNumber(number)
+                }
+                true
+            } else {
+                false
+            }
+        }
+    }
 
     private fun setupBackButton() {
         binding.backBtn.setOnClickListener {

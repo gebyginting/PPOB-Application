@@ -1,9 +1,11 @@
 package com.mobile.pacificaagent.data.network.retrofit
+
 import com.mobile.pacificaagent.data.request.LoginRequest
 import com.mobile.pacificaagent.data.request.RegisterRequest
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
 import com.mobile.pacificaagent.data.response.GetBalanceResponse
 import com.mobile.pacificaagent.data.response.LoginResponse
+import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
 import com.mobile.pacificaagent.data.response.UserProfileResponse
 import retrofit2.Response
@@ -11,6 +13,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -34,4 +38,11 @@ interface ApiService {
 
     @GET("/api/users/balance")
     suspend fun getBalance(): Response<GetBalanceResponse>
+
+    // PRODUK PRABAYAR
+    @GET("/api/users/produk-prabayar/{category_id}")
+    suspend fun produkPrabayar(
+        @Path("category_id") categoryId: String,
+        @Query("number") number: String
+    ): Response<ProdukPrabayarResponse>
 }

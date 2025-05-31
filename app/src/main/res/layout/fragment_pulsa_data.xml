@@ -69,11 +69,14 @@
                 android:text="Nomor Hp" />
 
             <EditText
+                android:id="@+id/inputUserNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:padding="8dp"
-                android:text="08xxxxxxxxxx" />
+                android:hint="Masukkan Nomor"
+                android:inputType="phone"
+                android:imeOptions="actionDone" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

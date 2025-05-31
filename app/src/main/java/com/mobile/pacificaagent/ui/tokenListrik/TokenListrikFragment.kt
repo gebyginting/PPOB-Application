@@ -6,16 +6,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mobile.pacificaagent.data.adapter.ItemAdapter
 import com.mobile.pacificaagent.data.model.Item
 import com.mobile.pacificaagent.databinding.FragmentTokenListrikBinding
+import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.ui.viewmodel.ProdukPrabayarViewModel
 
 class TokenListrikFragment : Fragment() {
     private var _binding: FragmentTokenListrikBinding? = null
     private val binding get() = _binding!!
-
+    private val produkPrabayarViewModel: ProdukPrabayarViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
     private val dataPulsa = listOf(
         Item("20.000", "Rp20.570"),
         Item("50.000", "Rp50.570"),
@@ -47,6 +52,7 @@ class TokenListrikFragment : Fragment() {
             if (noMeter.isBlank()) {
                 Toast.makeText(requireContext(), "Harap isi nomor meter dahulu", Toast.LENGTH_SHORT).show()
             } else {
+                produkPrabayarViewModel.produkPrabayar("KT-00001", noMeter)
                 val action = TokenListrikFragmentDirections
                     .actionTokenListrikFragmentToKonfirmasiTokenFragment(noMeter, selectedItem.nama, selectedItem.harga)
                 findNavController().navigate(action)
@@ -62,6 +68,7 @@ class TokenListrikFragment : Fragment() {
             findNavController().navigateUp()
         }
     }
+
 
 
 }

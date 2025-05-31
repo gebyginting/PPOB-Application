@@ -24,4 +24,9 @@ object Helper {
         val numberFormat = NumberFormat.getCurrencyInstance(localeID)
         return numberFormat.format(amount).replace(",00", "")
     }
+
+    fun formatRupiah(number: Int): String {
+        val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
+        return "Rp${formatter.format(number)}"
+    }
 }
