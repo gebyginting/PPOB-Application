@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.mobile.pacificaagent.data.adapter.ItemAdapter
 import com.mobile.pacificaagent.data.model.Item
 import com.mobile.pacificaagent.databinding.FragmentTopUpNominalSaldoBinding
+import com.mobile.pacificaagent.utils.Helper
 
 
 class TopUpNominalSaldoFragment : Fragment() {
 
     private var _binding: FragmentTopUpNominalSaldoBinding? = null
     private val binding get() = _binding!!
-    private var nominal: Float = 0f
+    private var nominal: Int = 0
 
     private val pilihanNominal = listOf(
         Item(nama = "10.000"),
@@ -47,7 +48,7 @@ class TopUpNominalSaldoFragment : Fragment() {
 
     private fun setupPilihanNominal() {
         val adapter = ItemAdapter(pilihanNominal, showHarga = false, enableSelection = true) { selectedItem ->
-            nominal = selectedItem.nama.toFloat()
+            nominal = Helper.convertRupiah(selectedItem.nama).toInt()
         }
         binding.rvItem.layoutManager = GridLayoutManager(requireContext(), 3)
         binding.rvItem.adapter = adapter
@@ -80,7 +81,7 @@ class TopUpNominalSaldoFragment : Fragment() {
         parentFragmentManager.setFragmentResultListener(
             "lanjut_ke_pembayaran", viewLifecycleOwner
         ) { _, result ->
-            val nominal = result.getFloat("nominal")
+            val nominal = result.getInt("nominal")
             val logoBank = result.getInt("logoBank")
 
             val action = TopUpNominalSaldoFragmentDirections

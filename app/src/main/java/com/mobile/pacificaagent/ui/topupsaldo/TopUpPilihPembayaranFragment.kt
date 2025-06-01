@@ -18,9 +18,9 @@ class TopUpPilihPembayaranFragment : Fragment() {
     private var pilihanNominal = 0.0
 
     private val pilihanPembayaran = listOf(
-        PilihanItem(R.drawable.bca_logo, "Transfer Bank BCA"),
-        PilihanItem(R.drawable.bri_logo, "Transfer Bank BRI"),
-        PilihanItem(R.drawable.mandiri_logo, "Transfer Bank Mandiri"),
+        PilihanItem(R.drawable.bca_logo, "Transfer Bank BCA", "BCAVA"),
+        PilihanItem(R.drawable.bri_logo, "Transfer Bank BRI", "BRIVA"),
+        PilihanItem(R.drawable.mandiri_logo, "Transfer Bank Mandiri", "MANDIRIVA"),
     )
 
     override fun onCreateView(
@@ -42,12 +42,15 @@ class TopUpPilihPembayaranFragment : Fragment() {
     private fun setupPilihanNominal() {
         val adapter = TopUpPilihanPembayaranAdapter(pilihanPembayaran) { selectedItem ->
             val navController = findNavController()
+
             navController.previousBackStackEntry?.savedStateHandle?.apply {
                 set("nominal", pilihanNominal.toString())
                 set("logoBank", selectedItem.imgUrl)
-                set("metode", selectedItem.nama)
+                set("nama", selectedItem.nama)
+                set("metode", selectedItem.metode)
             }
-            navController.popBackStack() // kembali ke fragment sebelumnya
+
+            navController.popBackStack()
         }
 
         binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
