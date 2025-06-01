@@ -3,6 +3,7 @@ package com.mobile.pacificaagent.data.network.retrofit
 import com.mobile.pacificaagent.data.request.LoginRequest
 import com.mobile.pacificaagent.data.request.RegisterRequest
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
+import com.mobile.pacificaagent.data.response.DetailProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.GetBalanceResponse
 import com.mobile.pacificaagent.data.response.LoginResponse
 import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
@@ -45,4 +46,9 @@ interface ApiService {
         @Path("category_id") categoryId: String,
         @Query("number") number: String
     ): Response<ProdukPrabayarResponse>
+
+    @GET("/api/users/detail-produk-prabayar/{product_id}")
+    suspend fun detailProdukPrabayar(
+        @Path("product_id") productId: String,
+    ): Response<DetailProdukPrabayarResponse>
 }

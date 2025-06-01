@@ -1,9 +1,9 @@
 package com.mobile.pacificaagent.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobile.pacificaagent.data.repository.ProdukPrabayarRepository
+import com.mobile.pacificaagent.data.response.DetailProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
 import com.mobile.pacificaagent.utils.ResultState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,8 +12,14 @@ import kotlinx.coroutines.launch
 
 class ProdukPrabayarViewModel(private val repository: ProdukPrabayarRepository) : ViewModel() {
 
-    private val _produkPrabayarState = MutableStateFlow<ResultState<ProdukPrabayarResponse>>(ResultState.Loading)
-    val produkPrabayarState: MutableStateFlow<ResultState<ProdukPrabayarResponse>> = _produkPrabayarState
+    private val _produkPulsaState = MutableStateFlow<ResultState<ProdukPrabayarResponse>>(ResultState.Loading)
+    val produkPulsaState: StateFlow<ResultState<ProdukPrabayarResponse>> = _produkPulsaState
+
+    private val _produkPaketDataState = MutableStateFlow<ResultState<ProdukPrabayarResponse>>(ResultState.Loading)
+    val produkPaketDataState: StateFlow<ResultState<ProdukPrabayarResponse>> = _produkPaketDataState
+
+    private val _detailProdukState = MutableStateFlow<ResultState<DetailProdukPrabayarResponse>>(ResultState.Loading)
+    val detailProdukState: StateFlow<ResultState<DetailProdukPrabayarResponse>> = _detailProdukState
 
     private val _phoneNumber = MutableStateFlow("")
     val phoneNumber: StateFlow<String> = _phoneNumber
@@ -22,24 +28,64 @@ class ProdukPrabayarViewModel(private val repository: ProdukPrabayarRepository) 
         _phoneNumber.value = number
     }
 
-    fun produkPrabayar(categoryId: String, number: String) {
+    fun loadProdukPulsa(number: String) {
         viewModelScope.launch {
-            _produkPrabayarState.value = ResultState.Loading
+            _produkPulsaState.value = ResultState.Loading
             try {
-                val response = repository.produkPrabayar(categoryId, number)
+                val response = repository.produkPrabayar("KT-00001", number)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _produkPulsaState.value = ResultState.Success(it)
+                    } ?: run {
+                        _produkPulsaState.value = ResultState.Error("Empty response body")
+                    }
+                } else {
+                    _produkPulsaState.value = ResultState.Error(response.message())
+                }
+            } catch (e: Exception) {
+                _produkPulsaState.value = ResultState.Error(e.message.toString())
+            }
+        }
+    }
+
+    fun loadProdukPaketData(number: String) {
+        viewModelScope.launch {
+            _produkPaketDataState.value = ResultState.Loading
+            try {
+                val response = repository.produkPrabayar("KT-00002", number)
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        _produkPaketDataState.value = ResultState.Success(it)
+                    } ?: run {
+                        _produkPaketDataState.value = ResultState.Error("Empty response body")
+                    }
+                } else {
+                    _produkPaketDataState.value = ResultState.Error(response.message())
+                }
+            } catch (e: Exception) {
+                _produkPaketDataState.value = ResultState.Error(e.message.toString())
+            }
+        }
+    }
+
+    fun detailProdukPrabayar(productId: String) {
+        viewModelScope.launch {
+            _detailProdukState.value = ResultState.Loading
+            try {
+                val response = repository.detailProdukPrabayar(productId)
                 if (response.isSuccessful) {
                     val data = response.body()
                     if (data != null) {
-                        _produkPrabayarState.value = ResultState.Success(data)
+                        _detailProdukState.value = ResultState.Success(data)
                     } else {
-                        _produkPrabayarState.value = ResultState.Error("Empty response body")
+                        _detailProdukState.value = ResultState.Error("Empty response body")
+
                     }
-                    Log.d("Response Produk Prabayar:", data.toString())
                 } else {
-                    _produkPrabayarState.value = ResultState.Error(response.message())
+                    _detailProdukState.value = ResultState.Error(response.message())
                 }
             } catch (e: Exception) {
-                _produkPrabayarState.value = ResultState.Error(e.message.toString())
+                _detailProdukState.value = ResultState.Error(e.message ?: "Unknown error")
             }
         }
     }

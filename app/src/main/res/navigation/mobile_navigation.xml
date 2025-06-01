@@ -129,10 +129,7 @@
         android:label="Konfirmasi Pulsa"
         tools:layout="@layout/fragment_konfirmasi_pulsa" >
         <argument
-            android:name="nama"
-            app:argType="string" />
-        <argument
-            android:name="harga"
+            android:name="productId"
             app:argType="string" />
     </fragment>
 
@@ -155,13 +152,7 @@
         android:label="Konfirmasi Token"
         tools:layout="@layout/fragment_konfirmasi_token" >
         <argument
-            android:name="nomorMeter"
-            app:argType="string" />
-        <argument
-            android:name="namaProduk"
-            app:argType="string" />
-        <argument
-            android:name="hargaProduk"
+            android:name="productId"
             app:argType="string" />
     </fragment>
 

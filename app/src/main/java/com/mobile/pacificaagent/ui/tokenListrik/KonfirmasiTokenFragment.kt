@@ -36,19 +36,19 @@ class KonfirmasiTokenFragment : Fragment() {
     }
 
     private fun setupDetailPembayaran() {
-        arguments?.let {
-            val noMeter = KonfirmasiTokenFragmentArgs.fromBundle(it).nomorMeter
-            val namaProduk = KonfirmasiTokenFragmentArgs.fromBundle(it).namaProduk
-            val hargaProduk = KonfirmasiTokenFragmentArgs.fromBundle(it).hargaProduk
-
-            with(binding) {
-                tanggalPembayaran.text = Helper.getTanggal()
-                tvNoMeter.text = noMeter
-                tvNominal.text = namaProduk
-                tvHarga.text = hargaProduk
-                tvTotalTagihan.text = hargaProduk
-            }
-        }
+//        arguments?.let {
+//            val noMeter = KonfirmasiTokenFragmentArgs.fromBundle(it).nomorMeter
+//            val namaProduk = KonfirmasiTokenFragmentArgs.fromBundle(it).namaProduk
+//            val hargaProduk = KonfirmasiTokenFragmentArgs.fromBundle(it).hargaProduk
+//
+//            with(binding) {
+//                tanggalPembayaran.text = Helper.getTanggal()
+//                tvNoMeter.text = noMeter
+//                tvNominal.text = namaProduk
+//                tvHarga.text = hargaProduk
+//                tvTotalTagihan.text = hargaProduk
+//            }
+//        }
 
     }
 

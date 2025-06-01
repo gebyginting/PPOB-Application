@@ -17,6 +17,7 @@ import com.mobile.pacificaagent.ui.ViewModelFactory
 import com.mobile.pacificaagent.ui.viewmodel.ProdukPrabayarViewModel
 import com.mobile.pacificaagent.utils.Helper.formatRupiah
 import com.mobile.pacificaagent.utils.ResultState
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -54,9 +55,9 @@ class PulsaFragment : Fragment() {
     }
 
     private fun setupDataPulsa(number: String) {
-        produkPrabayarViewModel.produkPrabayar("KT-00001", number)
+        produkPrabayarViewModel.loadProdukPulsa( number)
         viewLifecycleOwner.lifecycleScope.launch {
-            produkPrabayarViewModel.produkPrabayarState.collectLatest { result ->
+            produkPrabayarViewModel.produkPulsaState.collectLatest { result ->
                 when (result) {
                     is ResultState.Loading -> {
                         Toast.makeText(requireContext(), "LOADING", Toast.LENGTH_SHORT).show()
@@ -65,15 +66,41 @@ class PulsaFragment : Fragment() {
                         val data = result.data.data
                         val itemList = data.map { dataItem ->
                             Item(
+                                productId = dataItem.id,
                                 nama = dataItem.productName,
                                 harga = formatRupiah(dataItem.price)
                             )
                         }
+
                         val adapter = ItemAdapter(itemList) { selectedItem ->
-                            val action = PulsaDataFragmentDirections
-                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(selectedItem.nama, selectedItem.harga)
-                            findNavController().navigate(action)
+                            // Tampilkan progress
+                            binding.progressBar.visibility = View.VISIBLE
+
+                            // Muat detail produk
+                            produkPrabayarViewModel.detailProdukPrabayar(selectedItem.productId)
+
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                produkPrabayarViewModel.detailProdukState.collectLatest { detailResult ->
+                                    when (detailResult) {
+                                        is ResultState.Loading -> {
+                                            // ProgressBar sudah tampil
+                                        }
+                                        is ResultState.Success -> {
+                                            delay(1000) // opsional: jeda 1 detik untuk efek transisi
+                                            binding.progressBar.visibility = View.GONE
+                                            val action = PulsaDataFragmentDirections
+                                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(selectedItem.productId)
+                                            findNavController().navigate(action)
+                                        }
+                                        is ResultState.Error -> {
+                                            binding.progressBar.visibility = View.GONE
+                                            Toast.makeText(requireContext(), "Gagal ambil detail produk", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                            }
                         }
+
                         binding.rvItem.layoutManager = GridLayoutManager(requireContext(), 2)
                         binding.rvItem.adapter = adapter
                     }

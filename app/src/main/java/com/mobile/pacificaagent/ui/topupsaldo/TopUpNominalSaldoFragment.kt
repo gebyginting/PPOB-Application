@@ -19,12 +19,12 @@ class TopUpNominalSaldoFragment : Fragment() {
     private var nominal: Float = 0f
 
     private val pilihanNominal = listOf(
-        Item("10.000"),
-        Item("50.000"),
-        Item("100.000"),
-        Item("250.000"),
-        Item("500.000"),
-        Item("1.000.000"),
+        Item(nama = "10.000"),
+        Item(nama = "50.000"),
+        Item(nama = "100.000"),
+        Item(nama = "250.000"),
+        Item(nama = "500.000"),
+        Item(nama = "1.000.000"),
     )
 
     override fun onCreateView(

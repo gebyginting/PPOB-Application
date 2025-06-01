@@ -146,7 +146,6 @@
             android:textColor="#FFFFFF" />
     </LinearLayout>
 
-
     <!--    Progress Bar-->
     <LinearLayout
         android:id="@+id/progressBar"

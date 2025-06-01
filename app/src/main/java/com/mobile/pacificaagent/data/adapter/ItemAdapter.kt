@@ -34,7 +34,6 @@ class ItemAdapter(
                 }
             }
 
-
             // Handle background jika fitur seleksi diaktifkan
             if (enableSelection) {
                 if (isSelected) {
@@ -59,13 +58,6 @@ class ItemAdapter(
                 }
                 onItemClick?.invoke(produk)
             }
-//            if (onItemClick != null) {
-//                binding.root.setOnClickListener {
-//                    onItemClick.invoke(produk)
-//                }
-//            } else {
-//                binding.root.setOnClickListener(null) // no click
-//            }
         }
     }
 

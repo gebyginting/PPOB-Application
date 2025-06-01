@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.mobile.pacificaagent.data.adapter.ItemAdapter
 import com.mobile.pacificaagent.data.model.Item
 import com.mobile.pacificaagent.databinding.FragmentPaketDataBinding
@@ -39,40 +39,47 @@ class PaketDataFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getUserNumber()
+
+        observeProdukPrabayar()
+        getUserNumberAndFetchProduk()
     }
 
-    private fun getUserNumber() {
+    private fun getUserNumberAndFetchProduk() {
         viewLifecycleOwner.lifecycleScope.launch {
-            produkPrabayarViewModel.phoneNumber.collect { number ->
+            produkPrabayarViewModel.phoneNumber.collectLatest { number ->
                 if (number.isNotBlank()) {
-                    setupPaketData(number)
+                    produkPrabayarViewModel.loadProdukPaketData(number)
                 }
             }
         }
     }
-    private fun setupPaketData(number: String) {
-        produkPrabayarViewModel.produkPrabayar("KT-00002", number)
+
+    private fun observeProdukPrabayar() {
         viewLifecycleOwner.lifecycleScope.launch {
-            produkPrabayarViewModel.produkPrabayarState.collectLatest { result ->
+            produkPrabayarViewModel.produkPaketDataState.collectLatest { result ->
                 when (result) {
                     is ResultState.Loading -> {
                         Toast.makeText(requireContext(), "LOADING", Toast.LENGTH_SHORT).show()
                     }
                     is ResultState.Success -> {
                         val data = result.data.data
+                        if (data.isNullOrEmpty()) {
+                            Toast.makeText(requireContext(), "Data tidak tersedia", Toast.LENGTH_SHORT).show()
+                            return@collectLatest
+                        }
                         val itemList = data.map { dataItem ->
                             Item(
+                                productId = dataItem.id,
                                 nama = dataItem.productName,
                                 harga = formatRupiah(dataItem.price)
                             )
                         }
                         val adapter = ItemAdapter(itemList) { selectedItem ->
                             val action = PulsaDataFragmentDirections
-                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(selectedItem.nama, selectedItem.harga)
+                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(selectedItem.productId)
                             findNavController().navigate(action)
                         }
-                        binding.rvItem.layoutManager = GridLayoutManager(requireContext(), 2)
+                        binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
                         binding.rvItem.adapter = adapter
                     }
                     is ResultState.Error -> {

@@ -1,21 +1,33 @@
 package com.mobile.pacificaagent.ui.pulsadata
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.databinding.FragmentKonfirmasiPulsaBinding
+import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.ui.viewmodel.ProdukPrabayarViewModel
 import com.mobile.pacificaagent.utils.Helper
+import com.mobile.pacificaagent.utils.Helper.formatRupiah
+import com.mobile.pacificaagent.utils.ResultState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class KonfirmasiPulsaFragment : Fragment() {
 
     private var _binding: FragmentKonfirmasiPulsaBinding? = null
     private val binding get() = _binding!!
+    private val produkPrabayarViewModel: ProdukPrabayarViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
     private var isSuksesBayar = false
 
     override fun onCreateView(
@@ -38,14 +50,27 @@ class KonfirmasiPulsaFragment : Fragment() {
 
     private fun setupDetailPembayaran() {
         arguments?.let {
-            val namaProduk = KonfirmasiPulsaFragmentArgs.fromBundle(it).nama
-            val hargaProduk = KonfirmasiPulsaFragmentArgs.fromBundle(it).harga
-            val isPulsa = namaProduk.matches(Regex("\\d{1,3}(\\.\\d{3})*")) // contoh: 5.000, 10.000
-
-            with(binding) {
-                tvNamaProduk.text = if (isPulsa) "Pulsa Rp$namaProduk" else namaProduk
-                tvHargaProduk.text = hargaProduk
-                tvTotalTagihan.text = Helper.convertRupiah(hargaProduk)
+            viewLifecycleOwner.lifecycleScope.launch {
+                produkPrabayarViewModel.detailProdukState.collectLatest { result ->
+                    when (result) {
+                        is ResultState.Loading -> {
+                            Toast.makeText(requireContext(), "LOADING", Toast.LENGTH_SHORT).show()
+                        }
+                        is ResultState.Success -> {
+                            val dataItem = result.data.data
+                            dataItem.let {
+                                with(binding) {
+                                    tvNamaProduk.text = it.productName
+                                    tvHargaProduk.text = formatRupiah(it.price)
+                                    tvTotalTagihan.text = formatRupiah(it.price)
+                                }
+                            }
+                        }
+                        is ResultState.Error -> {
+                            Log.d("DATANYA:", result.error)
+                        }
+                    }
+                }
             }
         }
 
@@ -60,13 +85,13 @@ class KonfirmasiPulsaFragment : Fragment() {
         with(binding) {
             konfirmasiBtn.setOnClickListener {
                 if (isSuksesBayar) {
-                    // Kembali ke Home / root fragment
                     findNavController().popBackStack(R.id.navigation_home, false)
                 } else {
                     progressBar.visibility = View.VISIBLE
-                    konfirmasiBtn.isEnabled = false // agar tidak bisa klik ganda
+                    konfirmasiBtn.isEnabled = false
 
-                    Handler(Looper.getMainLooper()).postDelayed({
+                    lifecycleScope.launch {
+                        delay(3000)
                         progressBar.visibility = View.GONE
                         tvTitlePage.visibility = View.GONE
                         tvTransaksiSukses.visibility = View.VISIBLE
@@ -78,9 +103,15 @@ class KonfirmasiPulsaFragment : Fragment() {
                         konfirmasiBtn.text = "Selesai"
                         konfirmasiBtn.isEnabled = true
                         isSuksesBayar = true
-                    }, 3000)
+                    }
                 }
             }
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }
