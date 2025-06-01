@@ -1,4 +1,6 @@
 package com.mobile.pacificaagent.data.network.retrofit
+import DepositResponse
+import com.mobile.pacificaagent.data.request.DepositRequest
 import com.mobile.pacificaagent.data.request.LoginRequest
 import com.mobile.pacificaagent.data.request.RegisterRequest
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
@@ -34,4 +36,10 @@ interface ApiService {
 
     @GET("/api/users/balance")
     suspend fun getBalance(): Response<GetBalanceResponse>
+
+    // DEPOSIT
+    @POST("/api/users/deposit")
+    suspend fun deposit(
+        @Body requestBody: DepositRequest
+    ): Response<DepositResponse>
 }

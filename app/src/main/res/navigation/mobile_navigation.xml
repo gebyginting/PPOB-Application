@@ -207,7 +207,7 @@
 
         <argument
             android:name="nominal"
-            app:argType="float" />
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -217,7 +217,7 @@
         tools:layout="@layout/fragment_top_up_saldo_pembayaran" >
         <argument
             android:name="nominal"
-            app:argType="float" />
+            app:argType="integer" />
         <argument
             android:name="logoBank"
             app:argType="integer" />

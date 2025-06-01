@@ -4,10 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.databinding.FragmentTopUpSaldoPembayaranBinding
+import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.utils.Helper
+import com.mobile.pacificaagent.utils.ResultState
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -15,6 +22,9 @@ import java.util.Locale
 class TopUpSaldoPembayaranFragment : Fragment() {
     private var _binding: FragmentTopUpSaldoPembayaranBinding? = null
     private val binding get() = _binding!!
+    private val depositiVewModel: DepositViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,27 +38,41 @@ class TopUpSaldoPembayaranFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupDetailPembayaran()
+        observeDepositStatus()
         setupButtons()
     }
 
-    private fun setupDetailPembayaran() {
+    private fun observeDepositStatus() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            depositiVewModel.depositState.collect { result ->
+                when (result) {
+                    is ResultState.Loading -> {
+                    }
+
+                    is ResultState.Success -> {
+                        val data = result.data.data
+                        setupDetailPembayaran(data.detail.subDetail.amount)
+                    }
+
+                    is ResultState.Error -> {
+                        Toast.makeText(requireContext(), "Terjadi kesalahan", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupDetailPembayaran(nominal: Int) {
         arguments?.let {
             val logoBank = TopUpSaldoPembayaranFragmentArgs.fromBundle(it).logoBank
-            val nominal = TopUpSaldoPembayaranFragmentArgs.fromBundle(it).nominal
 
             with(binding) {
-//                val waktuSekarang = System.currentTimeMillis()
-//                val deadlineMillis = waktuSekarang + 24 * 60 * 60 * 1000
-//
-//                val deadlineFormatted = SimpleDateFormat("dd MMMM yyyy, HH:mm", Locale("id", "ID"))
-//                    .format(Date(deadlineMillis))
                 val batasWaktu = Calendar.getInstance().apply {
                     add(Calendar.HOUR_OF_DAY, 24)
                 }
                 val sdf = SimpleDateFormat("dd MMMM yyyy 'pukul' HH:mm", Locale("id", "ID"))
                 val batasWaktuString = sdf.format(batasWaktu.time)
-                tvTotalPembayaran.text = "Rp $nominal"
+                tvTotalPembayaran.text = Helper.formatToRupiah(nominal)
                 ivLogoBank.setImageResource(logoBank)
                 tvTanggalKadaluarsa.text = "$batasWaktuString"
             }
