@@ -105,7 +105,6 @@ class MainActivity : AppCompatActivity() {
     private fun checkUser() {
         val tokenUser = userPreference.getToken()
         Log.d("TokenUserMain:", tokenUser)
-        Log.d("TokenUserMain:", "Kosong")
 
         if (tokenUser.isEmpty()) {
             startActivity(Intent(this, LoginActivity::class.java))

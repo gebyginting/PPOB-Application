@@ -25,6 +25,15 @@ object Helper {
         return numberFormat.format(amount).replace(",00", "")
     }
 
+    fun convertRupiahToInt(rupiah: String): Int {
+        return rupiah
+            .replace("Rp", "", ignoreCase = true)
+            .replace(".", "")
+            .trim()
+            .toInt()
+    }
+
+
     fun formatRupiah(number: Int): String {
         val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
         return "Rp${formatter.format(number)}"

@@ -158,8 +158,11 @@
         android:label="Konfirmasi Token"
         tools:layout="@layout/fragment_konfirmasi_token" >
         <argument
-            android:name="productId"
+            android:name="number"
             app:argType="string" />
+        <argument
+            android:name="jumlah"
+            app:argType="integer" />
     </fragment>
 
     <fragment
@@ -169,6 +172,9 @@
         tools:layout="@layout/fragment_konfirmasi_e_wallet" >
         <argument
             android:name="nomor"
+            app:argType="string" />
+        <argument
+            android:name="namaEWallet"
             app:argType="string" />
         <argument
             android:name="namaProduk"

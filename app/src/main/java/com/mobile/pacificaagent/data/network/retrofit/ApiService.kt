@@ -6,14 +6,18 @@ import com.mobile.pacificaagent.data.request.LoginRequest
 import com.mobile.pacificaagent.data.request.RegisterRequest
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpDataRequest
+import com.mobile.pacificaagent.data.request.prabayar.TopUpEWalletRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpPulsaRequest
+import com.mobile.pacificaagent.data.request.prabayar.TopUpTokenRequest
 import com.mobile.pacificaagent.data.response.DetailProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.GetBalanceResponse
 import com.mobile.pacificaagent.data.response.LoginResponse
 import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
 import com.mobile.pacificaagent.data.response.UserProfileResponse
+import com.mobile.pacificaagent.data.response.prabayar.TopUpEWalletResponse
 import com.mobile.pacificaagent.data.response.prabayar.TopUpPulsaResponse
+import com.mobile.pacificaagent.data.response.prabayar.TopUpTokenResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -73,4 +77,14 @@ interface ApiService {
     suspend fun topupData(
         @Body requestBody: TopUpDataRequest
     ): Response<TopUpPulsaResponse>
+
+    @POST("/api/users/topup/token")
+    suspend fun topupToken(
+        @Body requestBody: TopUpTokenRequest
+    ): Response<TopUpTokenResponse>
+
+    @POST("/api/users/topup/ewallet")
+    suspend fun topupEWallet(
+        @Body requestBody: TopUpEWalletRequest
+    ): Response<TopUpEWalletResponse>
 }

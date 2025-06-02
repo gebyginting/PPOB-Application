@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +22,7 @@ import com.mobile.pacificaagent.utils.Helper
 import com.mobile.pacificaagent.utils.ResultState
 import com.mobile.pacificaagent.utils.UserPreference
 import com.mobile.pacificaagent.utils.promoList
+import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment() {
@@ -61,16 +64,22 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeBalanceState() {
-        lifecycleScope.launchWhenStarted {
-            userViewModel.getBalanceState.collect { state ->
-                when (state) {
-                    is ResultState.Loading -> {
-                    }
-                    is ResultState.Success -> {
-                        val response = state.data
-                        binding.userBalance.text = Helper.formatToRupiah(response.data.balance)
-                    }
-                    is ResultState.Error -> {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.getBalanceState.collect { state ->
+                    when (state) {
+                        is ResultState.Loading -> {
+                            binding.balanceLoading.visibility = View.VISIBLE
+                            binding.userBalance.text = "Memuat..."
+                        }
+                        is ResultState.Success -> {
+                            binding.balanceLoading.visibility = View.GONE
+                            binding.userBalance.text = Helper.formatRupiah(state.data.data.balance)
+                        }
+                        is ResultState.Error -> {
+                            binding.balanceLoading.visibility = View.GONE
+                            binding.userBalance.text = "Gagal memuat"
+                        }
                     }
                 }
             }

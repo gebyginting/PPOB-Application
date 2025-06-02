@@ -17,12 +17,12 @@ class EWalletNominalFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val dataItem = listOf(
-        Item("5.000", "Rp5.500"),
-        Item("10.000", "Rp10.500"),
-        Item("20.000", "Rp 20.500"),
-        Item("25.000", "Rp 25.500"),
-        Item("25.000", "Rp 25.500"),
-        Item("25.000", "Rp 25.500"),
+        Item(nama = "5.000", harga = "Rp5.500"),
+        Item(nama = "10.000", harga = "Rp10.500"),
+        Item(nama = "20.000", harga = "Rp 20.500"),
+        Item(nama = "25.000", harga = "Rp 25.500"),
+        Item(nama = "25.000", harga = "Rp 25.500"),
+        Item(nama = "25.000", harga = "Rp 25.500"),
     )
 
     override fun onCreateView(
@@ -49,7 +49,7 @@ class EWalletNominalFragment : Fragment() {
                 Toast.makeText(requireContext(), "Harap isi nomor dahulu", Toast.LENGTH_SHORT).show()
             } else {
                 val action = EWalletNominalFragmentDirections
-                    .actionEWalletNominalFragmentToKonfirmasiEWalletFragment(nomor, selectedItem.nama, selectedItem.harga)
+                    .actionEWalletNominalFragmentToKonfirmasiEWalletFragment(nomor, namaEWallet.toString(), selectedItem.nama, selectedItem.harga)
                 findNavController().navigate(action)
             }
         }

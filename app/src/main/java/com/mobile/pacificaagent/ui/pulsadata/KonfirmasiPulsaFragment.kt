@@ -17,6 +17,7 @@ import com.mobile.pacificaagent.data.request.prabayar.TopUpDataRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpPulsaRequest
 import com.mobile.pacificaagent.databinding.FragmentKonfirmasiPulsaBinding
 import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.ui.auth.UserViewModel
 import com.mobile.pacificaagent.ui.viewmodel.ProdukPrabayarViewModel
 import com.mobile.pacificaagent.ui.viewmodel.TopUpPrabayarViewModel
 import com.mobile.pacificaagent.utils.Helper
@@ -34,6 +35,9 @@ class KonfirmasiPulsaFragment : Fragment() {
         ViewModelFactory.getInstance(requireContext().applicationContext)
     }
     private val topUpPrabayarViewModel: TopUpPrabayarViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
+    private val userViewModel: UserViewModel by activityViewModels {
         ViewModelFactory.getInstance(requireContext().applicationContext)
     }
 
@@ -75,6 +79,7 @@ class KonfirmasiPulsaFragment : Fragment() {
                     is ResultState.Success -> {
                         val dataItem = result.data.data
                         with(binding) {
+                            tvNoHp.text = number
                             tvNamaProduk.text = dataItem.productName
                             tvHargaProduk.text = formatRupiah(dataItem.price)
                             tvTotalTagihan.text = formatRupiah(dataItem.price)
@@ -123,10 +128,11 @@ class KonfirmasiPulsaFragment : Fragment() {
         }
     }
 
-
     private fun setupBeliButton() {
         binding.konfirmasiBtn.setOnClickListener {
             if (isSuksesBayar) {
+                userViewModel.clearBalanceCache()
+                userViewModel.getBalance()
                 findNavController().popBackStack(R.id.navigation_home, false)
             } else {
                 val args = KonfirmasiPulsaFragmentArgs.fromBundle(requireArguments())
