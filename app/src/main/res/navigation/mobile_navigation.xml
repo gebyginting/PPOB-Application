@@ -131,6 +131,12 @@
         <argument
             android:name="productId"
             app:argType="string" />
+        <argument
+            android:name="number"
+            app:argType="string" />
+        <argument
+            android:name="productType"
+            app:argType="string" />
     </fragment>
 
     <fragment

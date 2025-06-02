@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class PaketDataFragment : Fragment() {
+
     private var _binding: FragmentPaketDataBinding? = null
     private val binding get() = _binding!!
     private val produkPrabayarViewModel: ProdukPrabayarViewModel by activityViewModels {
@@ -30,21 +31,19 @@ class PaketDataFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View {
         _binding = FragmentPaketDataBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         observeProdukPrabayar()
-        getUserNumberAndFetchProduk()
+        fetchProdukWhenPhoneAvailable()
     }
 
-    private fun getUserNumberAndFetchProduk() {
+    private fun fetchProdukWhenPhoneAvailable() {
         viewLifecycleOwner.lifecycleScope.launch {
             produkPrabayarViewModel.phoneNumber.collectLatest { number ->
                 if (number.isNotBlank()) {
@@ -60,14 +59,16 @@ class PaketDataFragment : Fragment() {
             produkPrabayarViewModel.produkPaketDataState.collectLatest { result ->
                 when (result) {
                     is ResultState.Loading -> {
-                        Toast.makeText(requireContext(), "LOADING", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Memuat data...", Toast.LENGTH_SHORT).show()
                     }
+
                     is ResultState.Success -> {
                         val data = result.data.data
                         if (data.isNullOrEmpty()) {
-                            Toast.makeText(requireContext(), "Data tidak tersedia", Toast.LENGTH_SHORT).show()
+                            binding.tvEmptyMessage.visibility = View.VISIBLE
                             return@collectLatest
                         }
+
                         val itemList = data.map { dataItem ->
                             Item(
                                 productId = dataItem.id,
@@ -75,16 +76,49 @@ class PaketDataFragment : Fragment() {
                                 harga = formatRupiah(dataItem.price)
                             )
                         }
+
+                        val nomorHp = produkPrabayarViewModel.phoneNumber.value
+
                         val adapter = ItemAdapter(itemList) { selectedItem ->
-                            val action = PulsaDataFragmentDirections
-                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(selectedItem.productId)
-                            findNavController().navigate(action)
+                            // Tampilkan progress bar
+                            binding.progressBar.visibility = View.VISIBLE
+
+                            produkPrabayarViewModel.detailProdukPrabayar(selectedItem.productId)
+
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                produkPrabayarViewModel.detailProdukState.collectLatest { detailResult ->
+                                    when (detailResult) {
+                                        is ResultState.Loading -> {
+                                            // progressBar sudah tampil
+                                        }
+
+                                        is ResultState.Success -> {
+                                            binding.progressBar.visibility = View.GONE
+                                            val action = PulsaDataFragmentDirections
+                                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(
+                                                    selectedItem.productId,
+                                                    nomorHp,
+                                                    "data"
+                                                )
+                                            findNavController().navigate(action)
+                                        }
+
+                                        is ResultState.Error -> {
+                                            binding.progressBar.visibility = View.GONE
+                                            Toast.makeText(requireContext(), "Gagal ambil detail produk", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                            }
+
                         }
+
                         binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
                         binding.rvItem.adapter = adapter
                     }
+
                     is ResultState.Error -> {
-                        Toast.makeText(requireContext(), "Terjadi Kesalahan", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Terjadi kesalahan saat memuat data", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

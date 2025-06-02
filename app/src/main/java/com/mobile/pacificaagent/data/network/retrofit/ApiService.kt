@@ -5,12 +5,15 @@ import com.mobile.pacificaagent.data.request.DepositRequest
 import com.mobile.pacificaagent.data.request.LoginRequest
 import com.mobile.pacificaagent.data.request.RegisterRequest
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
+import com.mobile.pacificaagent.data.request.prabayar.TopUpDataRequest
+import com.mobile.pacificaagent.data.request.prabayar.TopUpPulsaRequest
 import com.mobile.pacificaagent.data.response.DetailProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.GetBalanceResponse
 import com.mobile.pacificaagent.data.response.LoginResponse
 import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
 import com.mobile.pacificaagent.data.response.UserProfileResponse
+import com.mobile.pacificaagent.data.response.prabayar.TopUpPulsaResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -59,4 +62,15 @@ interface ApiService {
     suspend fun deposit(
         @Body requestBody: DepositRequest
     ): Response<DepositResponse>
+
+    // TOP-UP PRABAYAR
+    @POST("/api/users/topup/pulsa")
+    suspend fun topupPulsa(
+        @Body requestBody: TopUpPulsaRequest
+    ): Response<TopUpPulsaResponse>
+
+    @POST("/api/users/topup/data")
+    suspend fun topupData(
+        @Body requestBody: TopUpDataRequest
+    ): Response<TopUpPulsaResponse>
 }

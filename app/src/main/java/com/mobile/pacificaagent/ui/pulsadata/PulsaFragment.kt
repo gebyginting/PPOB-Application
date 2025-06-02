@@ -90,7 +90,7 @@ class PulsaFragment : Fragment() {
                                             delay(1000) // opsional: jeda 1 detik untuk efek transisi
                                             binding.progressBar.visibility = View.GONE
                                             val action = PulsaDataFragmentDirections
-                                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(selectedItem.productId)
+                                                .actionPulsaDataFragmentToKonfirmasiPulsaFragment(selectedItem.productId, number, "pulsa")
                                             findNavController().navigate(action)
                                         }
                                         is ResultState.Error -> {
