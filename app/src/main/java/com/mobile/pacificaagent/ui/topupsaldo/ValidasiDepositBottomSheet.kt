@@ -13,6 +13,7 @@ import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.data.request.DepositRequest
 import com.mobile.pacificaagent.databinding.ValidasiDepositBottomSheetBinding
 import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.utils.Helper
 
 class ValidasiDepositBottomSheet : BottomSheetDialogFragment() {
 
@@ -46,7 +47,7 @@ class ValidasiDepositBottomSheet : BottomSheetDialogFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.tvNominal.text = "Rp $nominal"
+        binding.tvNominal.text = nominal?.let { Helper.formatRupiah(it.toInt()) }
         logoBank?.let { binding.imgLogoBank.setImageResource(it) }
         binding.tvNamaBank.text = namaBank
         binding.cancelBtn.setOnClickListener {

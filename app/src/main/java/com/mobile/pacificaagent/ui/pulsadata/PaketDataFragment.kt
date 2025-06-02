@@ -48,6 +48,7 @@ class PaketDataFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             produkPrabayarViewModel.phoneNumber.collectLatest { number ->
                 if (number.isNotBlank()) {
+                    binding.tvEmptyMessage.visibility = View.GONE
                     produkPrabayarViewModel.loadProdukPaketData(number)
                 }
             }

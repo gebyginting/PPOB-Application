@@ -1,6 +1,6 @@
 package com.mobile.pacificaagent.data.repository
 
-import ApiConfig
+import com.mobile.pacificaagent.data.network.retrofit.ApiConfig
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

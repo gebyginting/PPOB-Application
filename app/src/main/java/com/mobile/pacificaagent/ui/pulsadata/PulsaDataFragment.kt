@@ -1,10 +1,12 @@
 package com.mobile.pacificaagent.ui.pulsadata
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -61,6 +63,8 @@ class PulsaDataFragment : Fragment() {
     private fun getUserNumber() {
         binding.inputUserNumber.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.inputUserNumber.windowToken, 0)
                 val number = binding.inputUserNumber.text.toString()
                 if (number.isNotBlank()) {
                     produkPrabayarViewModel.setPhoneNumber(number)

@@ -37,15 +37,10 @@ class ItemAdapter(
             // Handle background jika fitur seleksi diaktifkan
             if (enableSelection) {
                 if (isSelected) {
-                    binding.root.setBackgroundColor(
-                        ContextCompat.getColor(binding.root.context, R.color.grey)
-                    )
-                } else {
-                    binding.root.setBackgroundResource(R.drawable.item_card)
+                    val background = ContextCompat.getDrawable(binding.root.context, R.drawable.item_card)?.mutate()
+                    background?.setTint(ContextCompat.getColor(binding.root.context, R.color.grey))
+                    binding.root.background = background
                 }
-            } else {
-                // Jika tidak enableSelection, gunakan background default ripple biasa
-                binding.root.setBackgroundResource(R.drawable.item_card)
             }
 
             binding.root.setOnClickListener {

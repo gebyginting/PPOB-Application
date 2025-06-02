@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Rp1.000.000"
+                    android:text="Rp0"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -79,9 +79,7 @@
                 android:id="@+id/rvItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:paddingHorizontal="8dp"
-                tools:itemCount="2"/>
+                android:layout_marginTop="24dp" />
 
             <!-- Button -->
             <androidx.appcompat.widget.AppCompatButton

@@ -15,7 +15,7 @@ import com.mobile.pacificaagent.databinding.FragmentTopUpPilihPembayaranBinding
 class TopUpPilihPembayaranFragment : Fragment() {
     private var _binding: FragmentTopUpPilihPembayaranBinding? = null
     private val binding get() = _binding!!
-    private var pilihanNominal = 0.0
+    private var pilihanNominal = 0
 
     private val pilihanPembayaran = listOf(
         PilihanItem(R.drawable.bca_logo, "Transfer Bank BCA", "BCAVA"),
@@ -44,7 +44,7 @@ class TopUpPilihPembayaranFragment : Fragment() {
             val navController = findNavController()
 
             navController.previousBackStackEntry?.savedStateHandle?.apply {
-                set("nominal", pilihanNominal.toString())
+                set("nominal", pilihanNominal)
                 set("logoBank", selectedItem.imgUrl)
                 set("nama", selectedItem.nama)
                 set("metode", selectedItem.metode)
@@ -60,7 +60,7 @@ class TopUpPilihPembayaranFragment : Fragment() {
     private fun getNominal() {
         arguments?.let {
             val nominal = TopUpPilihPembayaranFragmentArgs.fromBundle(it).nominal
-            pilihanNominal = nominal.toDouble()
+            pilihanNominal = nominal
         }
     }
 }

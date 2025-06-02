@@ -51,7 +51,7 @@ class TopUpSaldoPembayaranFragment : Fragment() {
 
                     is ResultState.Success -> {
                         val data = result.data.data
-                        setupDetailPembayaran(data.detail.subDetail.amount)
+                        setupDetailPembayaran(data.detail.subDetail.amount, data.detail.va, data.detail.bank)
                     }
 
                     is ResultState.Error -> {
@@ -62,7 +62,7 @@ class TopUpSaldoPembayaranFragment : Fragment() {
         }
     }
 
-    private fun setupDetailPembayaran(nominal: Int) {
+    private fun setupDetailPembayaran(nominal: Int, nomorVA: String, metode: String) {
         arguments?.let {
             val logoBank = TopUpSaldoPembayaranFragmentArgs.fromBundle(it).logoBank
 
@@ -72,9 +72,10 @@ class TopUpSaldoPembayaranFragment : Fragment() {
                 }
                 val sdf = SimpleDateFormat("dd MMMM yyyy 'pukul' HH:mm", Locale("id", "ID"))
                 val batasWaktuString = sdf.format(batasWaktu.time)
+                tvNoVa.text = nomorVA
                 tvTotalPembayaran.text = Helper.formatToRupiah(nominal)
                 ivLogoBank.setImageResource(logoBank)
-                tvTanggalKadaluarsa.text = "$batasWaktuString"
+                tvTanggalKadaluarsa.text = batasWaktuString
             }
         }
     }

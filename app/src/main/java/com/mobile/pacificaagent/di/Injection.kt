@@ -1,6 +1,6 @@
 package com.mobile.pacificaagent.di
 
-import ApiConfig
+import com.mobile.pacificaagent.data.network.retrofit.ApiConfig
 import android.content.Context
 import com.mobile.pacificaagent.data.repository.AuthRepository
 import com.mobile.pacificaagent.data.repository.ProdukPrabayarRepository

@@ -1,6 +1,5 @@
-
+package com.mobile.pacificaagent.data.network.retrofit
 import com.mobile.pacificaagent.BuildConfig
-import com.mobile.pacificaagent.data.network.retrofit.ApiService
 import com.mobile.pacificaagent.utils.UserPreference
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient

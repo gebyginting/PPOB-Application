@@ -1,8 +1,10 @@
 package com.mobile.pacificaagent.ui.auth
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -32,6 +34,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setupRegister() {
         binding.registerButton.setOnClickListener {
+            // Sembunyikan keyboard
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+
             val username = binding.etUsername.text.toString().trim()
             val name = binding.etNama.text.toString().trim()
             val email = binding.etEmail.text.toString().trim()

@@ -106,11 +106,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:layout_weight="1"
-                android:text="@string/nomor_rekening"
+                android:text="@string/nomor_va"
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tvNoRekening"
+                android:id="@+id/tvNoVa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4799033210"

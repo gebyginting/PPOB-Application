@@ -18,6 +18,6 @@
     <string name="kode_token">Kode Token</string>
     <string name="riwayat_transaksi">Riwayat Transaksi</string>
     <string name="atas_nama">Atas Nama</string>
-    <string name="nomor_rekening">Nomor Rekening</string>
+    <string name="nomor_va">Nomor VA</string>
     <string name="total_pembayaran">Total Pembayaran</string>
 </resources>

@@ -73,4 +73,8 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+
+    // flexbox
+    implementation("com.google.android.flexbox:flexbox:3.0.0")
+
 }

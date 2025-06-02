@@ -6,7 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.mobile.pacificaagent.data.adapter.ItemAdapter
 import com.mobile.pacificaagent.data.model.Item
 import com.mobile.pacificaagent.databinding.FragmentTopUpNominalSaldoBinding
@@ -49,10 +52,19 @@ class TopUpNominalSaldoFragment : Fragment() {
     private fun setupPilihanNominal() {
         val adapter = ItemAdapter(pilihanNominal, showHarga = false, enableSelection = true) { selectedItem ->
             nominal = Helper.convertRupiah(selectedItem.nama).toInt()
+
+            binding.tvNominal.text = Helper.formatRupiah(nominal)
         }
-        binding.rvItem.layoutManager = GridLayoutManager(requireContext(), 3)
+        val flexboxLayoutManager = FlexboxLayoutManager(requireContext()).apply {
+            flexDirection = FlexDirection.ROW
+            flexWrap = FlexWrap.WRAP
+            justifyContent = JustifyContent.CENTER
+        }
+
+        binding.rvItem.layoutManager = flexboxLayoutManager
         binding.rvItem.adapter = adapter
     }
+
 
     private fun setupDepositButton() {
         binding.pilihPembayaranBtn.setOnClickListener {
@@ -63,13 +75,13 @@ class TopUpNominalSaldoFragment : Fragment() {
     }
     private fun showValidasiPembayaran() {
         findNavController().currentBackStackEntry?.savedStateHandle?.let { handle ->
-            handle.getLiveData<String>("nominal").observe(viewLifecycleOwner) { nominal ->
+            handle.getLiveData<Int>("nominal").observe(viewLifecycleOwner) { nominal ->
                 val logoBank = handle.get<Int>("logoBank")
                 val metode = handle.get<String>("metode")
                 if (metode != null) {
                     val bottomSheet = logoBank?.let { ValidasiDepositBottomSheet.newInstance(nominal.toFloat(), it, metode) }
                     bottomSheet?.show(parentFragmentManager, "KonfirmasiBottomSheet")
-                    handle.remove<Float>("nominal")
+                    handle.remove<Int>("nominal")
                     handle.remove<Int>("logoBank")
                     handle.remove<String>("metode")
                 }

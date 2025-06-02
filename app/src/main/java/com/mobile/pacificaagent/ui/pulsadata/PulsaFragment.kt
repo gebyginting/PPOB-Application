@@ -48,6 +48,7 @@ class PulsaFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             produkPrabayarViewModel.phoneNumber.collect { number ->
                 if (number.isNotBlank()) {
+                    binding.tvEmptyMessage.visibility = View.GONE
                     setupDataPulsa(number)
                 }
             }
