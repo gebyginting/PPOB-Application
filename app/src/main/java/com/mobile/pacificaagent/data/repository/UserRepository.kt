@@ -18,4 +18,8 @@ class UserRepository (private val apiConfig: ApiConfig) {
     suspend fun getBalance() = withContext(Dispatchers.IO) {
         apiConfig.getApiService().getBalance()
     }
+
+    suspend fun getHistory() = withContext(Dispatchers.IO) {
+        apiConfig.getApiService().getHistory()
+    }
 }

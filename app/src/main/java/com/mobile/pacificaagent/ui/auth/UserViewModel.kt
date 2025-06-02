@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mobile.pacificaagent.data.repository.UserRepository
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
 import com.mobile.pacificaagent.data.response.GetBalanceResponse
+import com.mobile.pacificaagent.data.response.HistoryResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
 import com.mobile.pacificaagent.data.response.UserProfileResponse
 import com.mobile.pacificaagent.utils.ResultState
@@ -29,6 +30,10 @@ class UserViewModel(
     private val _getBalanceState = MutableStateFlow<ResultState<GetBalanceResponse>>(ResultState.Loading)
     val getBalanceState: StateFlow<ResultState<GetBalanceResponse>> = _getBalanceState
     private var cachedBalance: GetBalanceResponse? = null
+
+    // history transaksi
+    private val _historyState = MutableStateFlow<ResultState<HistoryResponse>>(ResultState.Loading)
+    val historyState: StateFlow<ResultState<HistoryResponse>> = _historyState
 
     fun getProfile() {
         viewModelScope.launch {
@@ -122,4 +127,25 @@ class UserViewModel(
         }
     }
 
+    fun getHistory() {
+        viewModelScope.launch {
+            _historyState.value = ResultState.Loading
+            try {
+                val response = repository.getHistory()
+                if (response.isSuccessful) {
+                    val data = response.body()
+                    if (data != null) {
+                        _historyState.value = ResultState.Success(data)
+                    } else {
+                        _historyState.value = ResultState.Error("Empty response body")
+                    }
+                } else {
+                    _historyState.value = ResultState.Error(response.message())
+                }
+            } catch (e: Exception) {
+                _historyState.value = ResultState.Error(e.message.toString())
+            }
+        }
+    }
+    
 }

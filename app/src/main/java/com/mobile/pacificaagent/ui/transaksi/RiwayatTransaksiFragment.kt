@@ -10,9 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.databinding.FragmentRiwayatTransaksiBinding
+import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.ui.auth.UserViewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -20,6 +23,9 @@ class RiwayatTransaksiFragment : Fragment() {
 
     private var _binding: FragmentRiwayatTransaksiBinding? = null
     private val binding get() = _binding!!
+    private val userViewModel: UserViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -11,6 +11,7 @@ import com.mobile.pacificaagent.data.request.prabayar.TopUpPulsaRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpTokenRequest
 import com.mobile.pacificaagent.data.response.DetailProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.GetBalanceResponse
+import com.mobile.pacificaagent.data.response.HistoryResponse
 import com.mobile.pacificaagent.data.response.LoginResponse
 import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
@@ -28,6 +29,7 @@ import retrofit2.http.Query
 
 interface ApiService {
 
+    // USER
     @POST("/api/users/register")
     suspend fun register(
         @Body requestBody: RegisterRequest
@@ -48,6 +50,9 @@ interface ApiService {
 
     @GET("/api/users/balance")
     suspend fun getBalance(): Response<GetBalanceResponse>
+
+    @GET("/api/users/history")
+    suspend fun getHistory(): Response<HistoryResponse>
 
     // PRODUK PRABAYAR
     @GET("/api/users/produk-prabayar/{category_id}")

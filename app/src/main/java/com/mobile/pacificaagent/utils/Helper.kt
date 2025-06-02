@@ -1,5 +1,8 @@
 package com.mobile.pacificaagent.utils
 
+import com.mobile.pacificaagent.R
+import com.mobile.pacificaagent.data.model.Transaksi
+import com.mobile.pacificaagent.data.response.DataHistory
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -37,5 +40,21 @@ object Helper {
     fun formatRupiah(number: Int): String {
         val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
         return "Rp${formatter.format(number)}"
+    }
+
+    fun DataHistory.toTransaksi(): Transaksi {
+        return Transaksi(
+            jenisTransaksi = type,
+            statusTransaksi = status,
+            imgTransaksi = when (type) {
+                "TOP-UP E-WALLET" -> R.drawable.ic_ewallet
+                "TOP-UP TOKEN" -> R.drawable.ic_pln
+                "TOP-UP PULSA" -> R.drawable.ic_pulsa
+                else -> R.drawable.ic_ewallet_transaksi // default icon
+            },
+            namaTransaksi = "Transaksi: $type", // bisa kamu sesuaikan kalau ada nama di model lain
+            waktuTransaksi = "25 Juni 2025 08.00", // sementara karena `DataHistory` tidak punya field waktu
+            nominalTransaksi = formatRupiah(amount) // bisa pakai formatter kalau mau rapi
+        )
     }
 }

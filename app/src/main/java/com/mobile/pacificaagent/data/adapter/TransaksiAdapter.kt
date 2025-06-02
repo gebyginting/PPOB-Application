@@ -17,6 +17,7 @@ class TransaksiAdapter (
             binding.iconTransaksi.setImageResource(transaksi.imgTransaksi)
             binding.namaTransaksi.text = transaksi.namaTransaksi
             binding.tanggalTransaksi.text = transaksi.waktuTransaksi
+            binding.nominalTransaksi.text = transaksi.nominalTransaksi
             binding.root.setOnClickListener {
                 onItemClick(transaksi)
             }

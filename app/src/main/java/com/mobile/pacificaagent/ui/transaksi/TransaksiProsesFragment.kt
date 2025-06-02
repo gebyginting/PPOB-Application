@@ -6,22 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.data.adapter.TransaksiAdapter
-import com.mobile.pacificaagent.data.model.Transaksi
 import com.mobile.pacificaagent.databinding.FragmentTransaksiProsesBinding
+import com.mobile.pacificaagent.ui.ViewModelFactory
+import com.mobile.pacificaagent.ui.auth.UserViewModel
+import com.mobile.pacificaagent.utils.Helper.toTransaksi
+import com.mobile.pacificaagent.utils.ResultState
+import kotlinx.coroutines.launch
 
 class TransaksiProsesFragment : Fragment() {
     private var _binding: FragmentTransaksiProsesBinding? = null
     private val binding get() = _binding!!
-
-    private val dataTransaksi = listOf(
-        Transaksi("DANA", "Successfull", R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
-        Transaksi("DANA", "Successfull",R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
-        Transaksi("DANA", "Successfull",R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
-        Transaksi("Listrik Token", "Successfull",R.drawable.ic_pln, "Listrik Token", "25 Juni 2025 08.00", "-200.000"),
-    )
+    private val userViewModel: UserViewModel by activityViewModels {
+        ViewModelFactory.getInstance(requireContext().applicationContext)
+    }
+//    private val dataTransaksi = listOf(
+//        Transaksi("DANA", "Successfull", R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
+//        Transaksi("DANA", "Successfull",R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
+//        Transaksi("DANA", "Successfull",R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
+//        Transaksi("Listrik Token", "Successfull",R.drawable.ic_pln, "Listrik Token", "25 Juni 2025 08.00", "-200.000"),
+//    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,15 +43,45 @@ class TransaksiProsesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        setupListTransaksi()
+        setupListTransaksi()
     }
 
     private fun setupListTransaksi(){
-        val adapter = TransaksiAdapter(dataTransaksi) { selectedItem ->
-            Toast.makeText(requireContext(), "Memilih ${selectedItem.namaTransaksi}", Toast.LENGTH_SHORT).show()
-        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            userViewModel.historyState.collect { result ->
+                when (result) {
+                    is ResultState.Loading -> {
+                        showToast("Memuat riwayat transaksi")
+                    }
+                    is ResultState.Success -> {
+                        val filterItem = result.data.data.filter {
+                            it.status.equals("PENDING", ignoreCase = true)
+                        }
 
-        binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvItem.adapter = adapter
+                        val adapter = TransaksiAdapter(filterItem.map { it.toTransaksi() }) { item ->
+                            val action = TransaksiFragmentDirections
+                                .actionTransaksiFragmentToRiwayatTransaksiFragment(
+                                    item.jenisTransaksi,
+                                    item.statusTransaksi,
+                                    item.namaTransaksi,
+                                    item.nominalTransaksi
+                                )
+                            findNavController().navigate(action)
+                        }
+
+                        binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
+                        binding.rvItem.adapter = adapter
+                    }
+                    is ResultState.Error -> {
+                        showToast(result.error)
+                    }
+                }
+            }
+        }
     }
+
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
 }
