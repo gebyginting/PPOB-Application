@@ -8,14 +8,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.mobile.pacificaagent.R
 import com.mobile.pacificaagent.databinding.FragmentRiwayatTransaksiBinding
 import com.mobile.pacificaagent.ui.ViewModelFactory
 import com.mobile.pacificaagent.ui.auth.UserViewModel
+import com.mobile.pacificaagent.utils.Helper.formatRupiah
+import com.mobile.pacificaagent.utils.ResultState
+import com.mobile.pacificaagent.utils.TransactionDetail
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
@@ -47,25 +54,71 @@ class RiwayatTransaksiFragment : Fragment() {
     }
 
     private fun setupDetailPembayaran() {
-        arguments?.let {
-            val jenisTransaksi = RiwayatTransaksiFragmentArgs.fromBundle(it).jenisTransaksi
-            val statusTransaksi = RiwayatTransaksiFragmentArgs.fromBundle(it).statusTransaksi
-            val namaTransaksi = RiwayatTransaksiFragmentArgs.fromBundle(it).namaTransaksi
-            val nominalTransaksi = RiwayatTransaksiFragmentArgs.fromBundle(it).nominalTransaksi
+        viewLifecycleOwner.lifecycleScope.launch {
+            userViewModel.historyDetailState.collectLatest { result ->
+                when (result) {
+                    is ResultState.Loading -> {
+                        showLoading(true)
+                    }
 
-            with(binding) {
-                when (jenisTransaksi) {
-                    "DANA" -> ivTransaksi.setImageResource(R.drawable.ic_dana)
-                    "Listrik Token" -> ivTransaksi.setImageResource(R.drawable.ic_pln)
+                    is ResultState.Success -> {
+                        showLoading(false)
+                        when (val detail = result.data) {
+                            is TransactionDetail.Token -> {
+                                // Tampilkan tokenData di UI
+                                binding.tvTitle.text = "Pembelian ${detail.data.type}"
+                                binding.layoutKodeToken.visibility = View.VISIBLE
+                                binding.ivTransaksi.setImageResource(R.drawable.ic_pln)
+                                binding.tvKodeTokenValue.text = detail.detail.hasil.tokenNumber
+                                binding.tvJenisValue.text = detail.data.type
+                                binding.tvStatusValue.text = detail.data.status
+                                binding.tvHargaValue.text = formatRupiah(detail.detail.breakdown.total)
+                                binding.tvTotalTagihanValue.text = formatRupiah(detail.detail.breakdown.total)
+                            }
+
+                            is TransactionDetail.EWallet -> {
+                                // Tampilkan ewalletData di UI
+                                binding.tvTitle.text = getString(R.string.pembelian_ewallet, detail.detail.nameApps)
+                                binding.ivTransaksi.setImageResource(getEWalletLogo(detail.detail.nameApps))
+                                binding.tvJenisValue.text = detail.detail.nameApps
+                                binding.tvStatusValue.text = detail.data.status
+                                binding.tvHargaValue.text = formatRupiah(detail.detail.harga)
+                                binding.tvTotalTagihanValue.text = formatRupiah(detail.detail.harga)
+                            }
+
+                            is TransactionDetail.PulsaData -> {
+                                // Tampilkan pulsaData di UI
+                                binding.tvTitle.text = getString(R.string.pembelian_pulsa_paket_data)
+                                binding.tvJenisValue.text = detail.data.type
+                                binding.tvStatusValue.text = detail.data.status
+                                binding.tvHargaValue.text = formatRupiah(detail.detail.price)
+                                binding.tvTotalTagihanValue.text = formatRupiah(detail.detail.price)
+                            }
+
+                            is TransactionDetail.Deposit -> {
+                                binding.tvTitle.text = getString(R.string.top_up_saldo_pacificapay)
+                                binding.tvJenisValue.text = detail.data.type
+                                binding.tvStatusValue.text = detail.data.status
+                                binding.tvHargaValue.text = formatRupiah(detail.detail.detail.amount)
+                                binding.tvTotalTagihanValue.text = formatRupiah(detail.detail.detail.amount)
+                            }
+
+                            is TransactionDetail.Unknown -> {
+                                // Tampilkan fallback jika tipe tidak dikenal
+                                binding.tvTitle.text = getString(R.string.transaksi_tidak_diketahui)
+                                binding.tvJenisValue.text = "-"
+                                binding.tvStatusValue.text = "-"
+                                binding.tvHargaValue.text = "-"
+                                binding.tvTotalTagihanValue.text = "-"
+                            }
+                        }
+                    }
+
+                    is ResultState.Error -> {
+                        showLoading(false)
+                        Toast.makeText(requireContext(), "Gagal memuat data", Toast.LENGTH_SHORT).show()
+                    }
                 }
-                if (jenisTransaksi == "Listrik Token") {
-                    layoutKodeToken.visibility = View.VISIBLE
-                }
-                tvJenisValue.text = jenisTransaksi
-                tvTitle.text = "Pembelian $namaTransaksi"
-                tvStatusLabel.text = statusTransaksi
-                tvHargaValue.text = nominalTransaksi
-                tvTotalTagihanValue.text = nominalTransaksi
             }
         }
     }
@@ -116,6 +169,18 @@ class RiwayatTransaksiFragment : Fragment() {
         }
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun getEWalletLogo(type: String): Int {
+        return when (type.uppercase()) {
+            "DANA" -> R.drawable.logo_dana
+            "OVO" -> R.drawable.logo_ovo
+            "GPAY", "GOPAY" -> R.drawable.logo_gopay
+            else -> R.drawable.e_wallet
+        }
+    }
 
     private fun setupBackButton() {
         binding.backBtn.setOnClickListener {

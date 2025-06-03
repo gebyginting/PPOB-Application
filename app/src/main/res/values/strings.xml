@@ -21,4 +21,8 @@
     <string name="nomor_va">Nomor VA</string>
     <string name="total_pembayaran">Total Pembayaran</string>
     <string name="metode">Metode</string>
+    <string name="pembelian_ewallet">Pembelian EWallet %1$s</string>
+    <string name="pembelian_pulsa_paket_data">Pembelian Pulsa Paket Data</string>
+    <string name="top_up_saldo_pacificapay">Top Up Saldo PacificaPay</string>
+    <string name="transaksi_tidak_diketahui">Transaksi Tidak Diketahui</string>
 </resources>

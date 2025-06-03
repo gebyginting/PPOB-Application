@@ -24,12 +24,6 @@ class TransaksiProsesFragment : Fragment() {
     private val userViewModel: UserViewModel by activityViewModels {
         ViewModelFactory.getInstance(requireContext().applicationContext)
     }
-//    private val dataTransaksi = listOf(
-//        Transaksi("DANA", "Successfull", R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
-//        Transaksi("DANA", "Successfull",R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
-//        Transaksi("DANA", "Successfull",R.drawable.ic_ewallet, "Ewallet Dana", "25 Juni 2025 08.00", "-200.000"),
-//        Transaksi("Listrik Token", "Successfull",R.drawable.ic_pln, "Listrik Token", "25 Juni 2025 08.00", "-200.000"),
-//    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,21 +45,18 @@ class TransaksiProsesFragment : Fragment() {
             userViewModel.historyState.collect { result ->
                 when (result) {
                     is ResultState.Loading -> {
-                        showToast("Memuat riwayat transaksi")
+                        showLoading(true)
                     }
                     is ResultState.Success -> {
+                        showLoading(false)
                         val filterItem = result.data.data.filter {
                             it.status.equals("PENDING", ignoreCase = true)
                         }
 
                         val adapter = TransaksiAdapter(filterItem.map { it.toTransaksi() }) { item ->
+                            userViewModel.getHistoryDetail(item.id)
                             val action = TransaksiFragmentDirections
-                                .actionTransaksiFragmentToRiwayatTransaksiFragment(
-                                    item.jenisTransaksi,
-                                    item.statusTransaksi,
-                                    item.namaTransaksi,
-                                    item.nominalTransaksi
-                                )
+                                .actionTransaksiFragmentToRiwayatTransaksiFragment()
                             findNavController().navigate(action)
                         }
 
@@ -73,6 +64,7 @@ class TransaksiProsesFragment : Fragment() {
                         binding.rvItem.adapter = adapter
                     }
                     is ResultState.Error -> {
+                        showLoading(false)
                         showToast(result.error)
                     }
                 }
@@ -84,4 +76,7 @@ class TransaksiProsesFragment : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
 }

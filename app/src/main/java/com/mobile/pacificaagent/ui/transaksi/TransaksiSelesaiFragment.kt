@@ -46,34 +46,34 @@ class TransaksiSelesaiFragment : Fragment() {
         setupListTransaksi()
     }
 
-    private fun setupListTransaksi(){
+    private fun setupListTransaksi() {
         viewLifecycleOwner.lifecycleScope.launch {
             userViewModel.historyState.collect { result ->
                 when (result) {
                     is ResultState.Loading -> {
-                        showToast("Memuat riwayat transaksi")
+                        showLoading(true)
                     }
+
                     is ResultState.Success -> {
+                        showLoading(false)
                         val filterItem = result.data.data.filter {
                             it.status.equals("SUCCESS", ignoreCase = true) ||
-                            it.status.equals("PAID", ignoreCase = true)
+                                    it.status.equals("PAID", ignoreCase = true)
                         }
 
                         val adapter = TransaksiAdapter(filterItem.map { it.toTransaksi() }) { item ->
+                            userViewModel.getHistoryDetail(item.id)
                             val action = TransaksiFragmentDirections
-                                .actionTransaksiFragmentToRiwayatTransaksiFragment(
-                                    item.jenisTransaksi,
-                                    item.statusTransaksi,
-                                    item.namaTransaksi,
-                                    item.nominalTransaksi
-                                )
+                                .actionTransaksiFragmentToRiwayatTransaksiFragment()
                             findNavController().navigate(action)
                         }
 
                         binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
                         binding.rvItem.adapter = adapter
                     }
+
                     is ResultState.Error -> {
+                        showLoading(false)
                         showToast(result.error)
                     }
                 }
@@ -83,5 +83,9 @@ class TransaksiSelesaiFragment : Fragment() {
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

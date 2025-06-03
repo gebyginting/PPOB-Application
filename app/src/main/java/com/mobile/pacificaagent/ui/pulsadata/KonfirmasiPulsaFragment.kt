@@ -222,7 +222,7 @@ class KonfirmasiPulsaFragment : Fragment() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.konfirmasiBtn.isEnabled = !isLoading
     }
 

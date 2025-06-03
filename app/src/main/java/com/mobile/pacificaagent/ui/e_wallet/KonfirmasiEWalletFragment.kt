@@ -140,11 +140,16 @@ class KonfirmasiEWalletFragment : Fragment() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         binding.konfirmasiBtn.isEnabled = !isLoading
     }
 
     private fun showToast(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

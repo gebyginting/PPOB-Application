@@ -90,7 +90,7 @@ class EditProfileFragment : Fragment() {
                         Toast.makeText(requireContext(), "Berhasil menyimpan profil", Toast.LENGTH_SHORT).show()
                         // Delay 1 detik supaya toast bisa kelihatan dulu
                         viewLifecycleOwner.lifecycleScope.launch {
-                            binding.progressBar.visibility = View.VISIBLE
+                            showLoading(true)
                             delay(3000)
                             findNavController().popBackStack()
                         }
@@ -119,6 +119,10 @@ class EditProfileFragment : Fragment() {
         binding.backBtn.setOnClickListener {
             findNavController().popBackStack()
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

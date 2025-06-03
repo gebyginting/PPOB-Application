@@ -11,6 +11,7 @@ import com.mobile.pacificaagent.data.request.prabayar.TopUpPulsaRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpTokenRequest
 import com.mobile.pacificaagent.data.response.DetailProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.GetBalanceResponse
+import com.mobile.pacificaagent.data.response.HistoryDetailResponse
 import com.mobile.pacificaagent.data.response.HistoryResponse
 import com.mobile.pacificaagent.data.response.LoginResponse
 import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
@@ -53,6 +54,9 @@ interface ApiService {
 
     @GET("/api/users/history")
     suspend fun getHistory(): Response<HistoryResponse>
+
+    @GET("/api/users/history/detail/{id}")
+    suspend fun getHistoryDetail(@Path("id") id: String): Response<HistoryDetailResponse>
 
     // PRODUK PRABAYAR
     @GET("/api/users/produk-prabayar/{category_id}")

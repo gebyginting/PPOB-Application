@@ -65,10 +65,10 @@ class RegisterActivity : AppCompatActivity() {
             authViewModel.registerState.collect { state ->
                 when (state) {
                     is ResultState.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
+                        showLoading(true)
                     }
                     is ResultState.Success -> {
-                        binding.progressBar.visibility = View.GONE
+                        showLoading(false)
                         val response = state.data
                         Toast.makeText(this@RegisterActivity, response.message, Toast.LENGTH_SHORT).show()
                         val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
@@ -77,12 +77,16 @@ class RegisterActivity : AppCompatActivity() {
 
                     }
                     is ResultState.Error -> {
-                        binding.progressBar.visibility = View.GONE
+                        showLoading(false)
                         Toast.makeText(this@RegisterActivity, "Register gagal: ${state.error}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private fun setupButtons() {

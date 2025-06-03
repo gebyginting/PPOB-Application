@@ -81,7 +81,6 @@ class PaketDataFragment : Fragment() {
 
                         val adapter = ItemAdapter(itemList) { selectedItem ->
                             // Tampilkan progress bar
-                            binding.progressBar.visibility = View.VISIBLE
 
                             produkPrabayarViewModel.detailProdukPrabayar(selectedItem.productId)
 
@@ -89,11 +88,11 @@ class PaketDataFragment : Fragment() {
                                 produkPrabayarViewModel.detailProdukState.collectLatest { detailResult ->
                                     when (detailResult) {
                                         is ResultState.Loading -> {
-                                            // progressBar sudah tampil
+                                            showLoading(true)
                                         }
 
                                         is ResultState.Success -> {
-                                            binding.progressBar.visibility = View.GONE
+                                            showLoading(false)
                                             val action = PulsaDataFragmentDirections
                                                 .actionPulsaDataFragmentToKonfirmasiPulsaFragment(
                                                     selectedItem.productId,
@@ -104,7 +103,7 @@ class PaketDataFragment : Fragment() {
                                         }
 
                                         is ResultState.Error -> {
-                                            binding.progressBar.visibility = View.GONE
+                                            showLoading(false)
                                             Toast.makeText(requireContext(), "Gagal ambil detail produk", Toast.LENGTH_SHORT).show()
                                         }
                                     }
@@ -123,6 +122,10 @@ class PaketDataFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

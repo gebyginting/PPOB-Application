@@ -9,7 +9,9 @@ import com.mobile.pacificaagent.data.response.HistoryResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
 import com.mobile.pacificaagent.data.response.UserProfileResponse
 import com.mobile.pacificaagent.utils.ResultState
+import com.mobile.pacificaagent.utils.TransactionDetail
 import com.mobile.pacificaagent.utils.UserPreference
+import com.mobile.pacificaagent.utils.parseTransactionDetail
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,6 +36,9 @@ class UserViewModel(
     // history transaksi
     private val _historyState = MutableStateFlow<ResultState<HistoryResponse>>(ResultState.Loading)
     val historyState: StateFlow<ResultState<HistoryResponse>> = _historyState
+    private val _historyDetailState = MutableStateFlow<ResultState<TransactionDetail>>(ResultState.Loading)
+    val historyDetailState: StateFlow<ResultState<TransactionDetail>> = _historyDetailState
+
 
     fun getProfile() {
         viewModelScope.launch {
@@ -147,5 +152,28 @@ class UserViewModel(
             }
         }
     }
-    
+
+    fun getHistoryDetail(id: String) {
+        viewModelScope.launch {
+            _historyDetailState.value = ResultState.Loading
+            try {
+                val response = repository.getHistoryDetail(id)
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null) {
+                        val data = body.data
+                        val detailJson = body.data.detail
+                        val parsedDetail = parseTransactionDetail(data, detailJson)
+                        _historyDetailState.value = ResultState.Success(parsedDetail)
+                    } else {
+                        _historyDetailState.value = ResultState.Error("Data kosong")
+                    }
+                } else {
+                    _historyDetailState.value = ResultState.Error(response.message())
+                }
+            } catch (e: Exception) {
+                _historyDetailState.value = ResultState.Error(e.message.orEmpty())
+            }
+        }
+    }
 }

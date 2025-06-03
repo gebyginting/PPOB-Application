@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.transaksi.TransaksiProsesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -15,4 +14,11 @@
         tools:itemCount="4"
         tools:listitem="@layout/item_transaksi" />
 
+    <!--    Progress Bar-->
+    <include
+        layout="@layout/loading_layout_overlay"
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
 </FrameLayout>

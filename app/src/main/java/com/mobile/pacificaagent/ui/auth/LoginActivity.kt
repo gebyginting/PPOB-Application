@@ -65,10 +65,10 @@ class LoginActivity : AppCompatActivity() {
             authViewModel.loginState.collect { state ->
                 when (state) {
                     is ResultState.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
+                        showLoading(true)
                     }
                     is ResultState.Success -> {
-                        binding.progressBar.visibility = View.GONE
+                        showLoading(false)
                         val response = state.data
                         val token = response.data.token
                         userPreference.saveToken(token)
@@ -76,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
 
                     }
                     is ResultState.Error -> {
-                        binding.progressBar.visibility = View.GONE
+                        showLoading(false)
                         Toast.makeText(this@LoginActivity, "Login gagal: ${state.error}", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -109,11 +109,15 @@ class LoginActivity : AppCompatActivity() {
                         startActivity(intent)                    }
 
                     is ResultState.Error -> {
-                        binding.progressBar.visibility = View.GONE
+                        showLoading(false)
                         Log.d("UserPref", "Saved profile: Gagal")
                     }
                 }
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loadingOverlay.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

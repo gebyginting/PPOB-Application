@@ -26,20 +26,7 @@
         android:id="@+id/riwayatTransaksiFragment"
         android:name="com.mobile.pacificaagent.ui.transaksi.RiwayatTransaksiFragment"
         android:label="Riwayat Transaksi"
-        tools:layout="@layout/fragment_riwayat_transaksi" >
-        <argument
-            android:name="jenisTransaksi"
-            app:argType="string" />
-        <argument
-            android:name="statusTransaksi"
-            app:argType="string" />
-        <argument
-            android:name="namaTransaksi"
-            app:argType="string" />
-        <argument
-            android:name="nominalTransaksi"
-            app:argType="string" />
-    </fragment>
+        tools:layout="@layout/fragment_riwayat_transaksi" />
 
     <fragment
         android:id="@+id/navigation_profile"

@@ -9,22 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mobile.pacificaagent.data.adapter.ItemAdapter
-import com.mobile.pacificaagent.data.model.Item
+import com.mobile.pacificaagent.data.item.DummyItems.dataPulsa
 import com.mobile.pacificaagent.databinding.FragmentTokenListrikBinding
 
 class TokenListrikFragment : Fragment() {
     private var _binding: FragmentTokenListrikBinding? = null
     private val binding get() = _binding!!
-
-    private val dataPulsa = listOf(
-        Item(nama = "2.000", harga = "Rp2.570"),
-        Item(nama = "20.000", harga = "Rp20.570"),
-        Item(nama = "50.000", harga = "Rp50.570"),
-        Item(nama = "100.000", harga = "Rp100.570"),
-        Item(nama = "200.000", harga = "Rp200.570"),
-        Item(nama = "500.000", harga = "Rp500.570"),
-        Item(nama = "1.000.000", harga = "Rp1.000.570"),
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,7 +33,7 @@ class TokenListrikFragment : Fragment() {
 
     private fun setupDataToken() {
         val adapter = ItemAdapter(dataPulsa) { selectedItem ->
-            val noMeter = binding.inputNomorMeter.text.toString() // pindahkan ke sini
+            val noMeter = binding.inputNomorMeter.text.toString()
             if (noMeter.isBlank()) {
                 Toast.makeText(requireContext(), "Harap isi nomor meter dahulu", Toast.LENGTH_SHORT).show()
             } else {

@@ -22,4 +22,8 @@ class UserRepository (private val apiConfig: ApiConfig) {
     suspend fun getHistory() = withContext(Dispatchers.IO) {
         apiConfig.getApiService().getHistory()
     }
+
+    suspend fun getHistoryDetail(id: String) = withContext(Dispatchers.IO) {
+        apiConfig.getApiService().getHistoryDetail(id)
+    }
 }

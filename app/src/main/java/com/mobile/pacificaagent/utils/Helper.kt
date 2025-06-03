@@ -44,6 +44,7 @@ object Helper {
 
     fun DataHistory.toTransaksi(): Transaksi {
         return Transaksi(
+            id = id,
             jenisTransaksi = type,
             statusTransaksi = status,
             imgTransaksi = when (type) {

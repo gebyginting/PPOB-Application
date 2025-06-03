@@ -9,21 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.mobile.pacificaagent.data.adapter.ItemAdapter
-import com.mobile.pacificaagent.data.model.Item
+import com.mobile.pacificaagent.data.item.DummyItems.dataEWallet
 import com.mobile.pacificaagent.databinding.FragmentEWalletNominalBinding
 
 class EWalletNominalFragment : Fragment() {
     private var _binding: FragmentEWalletNominalBinding? = null
     private val binding get() = _binding!!
-
-    private val dataItem = listOf(
-        Item(nama = "5.000", harga = "Rp5.500"),
-        Item(nama = "10.000", harga = "Rp10.500"),
-        Item(nama = "20.000", harga = "Rp 20.500"),
-        Item(nama = "25.000", harga = "Rp 25.500"),
-        Item(nama = "25.000", harga = "Rp 25.500"),
-        Item(nama = "25.000", harga = "Rp 25.500"),
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,8 +34,8 @@ class EWalletNominalFragment : Fragment() {
         binding.tvTitlePage.text = namaEWallet
         binding.namaEWallet.text = "Nomor $namaEWallet"
 
-        val adapter = ItemAdapter(dataItem) { selectedItem ->
-            val nomor = binding.inputNomor.text.toString() // pindahkan ke sini
+        val adapter = ItemAdapter(dataEWallet) { selectedItem ->
+            val nomor = binding.inputNomor.text.toString()
             if (nomor.isBlank()) {
                 Toast.makeText(requireContext(), "Harap isi nomor dahulu", Toast.LENGTH_SHORT).show()
             } else {
@@ -63,5 +54,10 @@ class EWalletNominalFragment : Fragment() {
         binding.backBtn.setOnClickListener {
             findNavController().navigateUp()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
