@@ -8,6 +8,7 @@ import com.mobile.pacificaagent.data.request.LoginRequest
 import com.mobile.pacificaagent.data.request.RegisterRequest
 import com.mobile.pacificaagent.data.response.LoginResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
+import com.mobile.pacificaagent.utils.Helper.parseErrorMessage
 import com.mobile.pacificaagent.utils.ResultState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -34,7 +35,8 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                     }
                     Log.d("Response Register;:", data.toString())
                 } else {
-                    _registerState.value = ResultState.Error(response.message())
+                    val errorMessage = parseErrorMessage(response.errorBody()?.string())
+                    _registerState.value = ResultState.Error(errorMessage)
                 }
             } catch (e: Exception) {
                 _registerState.value = ResultState.Error(e.message.toString())
@@ -56,11 +58,13 @@ class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
                     }
                     Log.d("Response Register;:", data.toString())
                 } else {
-                    _loginState.value = ResultState.Error(response.message())
+                    val errorMessage = parseErrorMessage(response.errorBody()?.string())
+                    _loginState.value = ResultState.Error(errorMessage)
                 }
             } catch (e: Exception) {
                 _loginState.value = ResultState.Error(e.message.toString())
             }
         }
     }
+
 }

@@ -10,6 +10,7 @@ import com.mobile.pacificaagent.data.request.prabayar.TopUpTokenRequest
 import com.mobile.pacificaagent.data.response.prabayar.TopUpEWalletResponse
 import com.mobile.pacificaagent.data.response.prabayar.TopUpPulsaResponse
 import com.mobile.pacificaagent.data.response.prabayar.TopUpTokenResponse
+import com.mobile.pacificaagent.utils.Helper.parseErrorMessage
 import com.mobile.pacificaagent.utils.ResultState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -110,15 +111,6 @@ class TopUpPrabayarViewModel (private val repository: TopUpPrabayarRepository) :
             } catch (e: Exception) {
                 _topupEWalletState.value = ResultState.Error(e.message.toString())
             }
-        }
-    }
-
-    private fun parseErrorMessage(jsonString: String?): String {
-        return try {
-            val json = org.json.JSONObject(jsonString ?: "")
-            json.getString("errors") // sesuaikan dengan struktur JSON dari server kamu
-        } catch (e: Exception) {
-            "Terjadi kesalahan"
         }
     }
 

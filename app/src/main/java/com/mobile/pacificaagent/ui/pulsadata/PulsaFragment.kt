@@ -68,7 +68,7 @@ class PulsaFragment : Fragment() {
                         val itemList = data.map { dataItem ->
                             Item(
                                 productId = dataItem.id,
-                                nama = dataItem.productName,
+                                nama = dataItem.
                                 harga = formatRupiah(dataItem.price)
                             )
                         }

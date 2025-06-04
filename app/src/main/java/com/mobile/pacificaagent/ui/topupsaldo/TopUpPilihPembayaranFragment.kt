@@ -18,9 +18,9 @@ class TopUpPilihPembayaranFragment : Fragment() {
     private var pilihanNominal = 0
 
     private val pilihanPembayaran = listOf(
-        PilihanItem(R.drawable.bca_logo, "Transfer Bank BCA", "BCAVA"),
-        PilihanItem(R.drawable.bri_logo, "Transfer Bank BRI", "BRIVA"),
-        PilihanItem(R.drawable.mandiri_logo, "Transfer Bank Mandiri", "MANDIRIVA"),
+        PilihanItem(imgUrl = R.drawable.bca_logo, nama = "Transfer Bank BCA", metode = "BCAVA"),
+        PilihanItem(imgUrl = R.drawable.bri_logo, nama = "Transfer Bank BRI", metode = "BRIVA"),
+        PilihanItem(imgUrl = R.drawable.mandiri_logo, nama = "Transfer Bank Mandiri", metode = "MANDIRIVA"),
     )
 
     override fun onCreateView(

@@ -42,6 +42,15 @@ object Helper {
         return "Rp${formatter.format(number)}"
     }
 
+    fun parseErrorMessage(jsonString: String?): String {
+        return try {
+            val json = org.json.JSONObject(jsonString ?: "")
+            json.getString("errors") // sesuaikan dengan struktur JSON dari server kamu
+        } catch (e: Exception) {
+            "Terjadi kesalahan"
+        }
+    }
+
     fun DataHistory.toTransaksi(): Transaksi {
         return Transaksi(
             id = id,

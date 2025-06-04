@@ -79,7 +79,6 @@ class ProdukPrabayarViewModel(private val repository: ProdukPrabayarRepository) 
                         _detailProdukState.value = ResultState.Success(data)
                     } else {
                         _detailProdukState.value = ResultState.Error("Empty response body")
-
                     }
                 } else {
                     _detailProdukState.value = ResultState.Error(response.message())

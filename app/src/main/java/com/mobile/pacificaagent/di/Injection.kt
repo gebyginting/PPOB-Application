@@ -6,6 +6,7 @@ import com.mobile.pacificaagent.data.repository.AuthRepository
 import com.mobile.pacificaagent.data.repository.DepositRepository
 import com.mobile.pacificaagent.data.repository.ProdukPrabayarRepository
 import com.mobile.pacificaagent.data.repository.UserRepository
+import com.mobile.pacificaagent.data.repository.pascabayar.ProdukPascabayarRepository
 import com.mobile.pacificaagent.data.repository.prabayar.TopUpPrabayarRepository
 import com.mobile.pacificaagent.utils.UserPreference
 
@@ -38,5 +39,11 @@ object Injection {
         val userPref = UserPreference(context)
         val apiConfig = ApiConfig(userPref)
         return TopUpPrabayarRepository(apiConfig)
+    }
+
+    fun provideProdukPascabayarRepository(context: Context): ProdukPascabayarRepository {
+        val userPref = UserPreference(context)
+        val apiConfig = ApiConfig(userPref)
+        return ProdukPascabayarRepository(apiConfig)
     }
 }

@@ -49,6 +49,15 @@
         tools:itemCount="3"
         tools:listitem="@layout/item_wifi_ewallet" />
 
+    <!--    Progress Bar-->
+    <include
+        layout="@layout/loading_layout_overlay"
+        android:id="@+id/loadingOverlay"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline3"
         android:layout_width="wrap_content"

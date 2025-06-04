@@ -7,11 +7,13 @@ import com.mobile.pacificaagent.data.repository.AuthRepository
 import com.mobile.pacificaagent.data.repository.DepositRepository
 import com.mobile.pacificaagent.data.repository.ProdukPrabayarRepository
 import com.mobile.pacificaagent.data.repository.UserRepository
+import com.mobile.pacificaagent.data.repository.pascabayar.ProdukPascabayarRepository
 import com.mobile.pacificaagent.data.repository.prabayar.TopUpPrabayarRepository
 import com.mobile.pacificaagent.di.Injection
 import com.mobile.pacificaagent.ui.auth.AuthViewModel
 import com.mobile.pacificaagent.ui.auth.UserViewModel
 import com.mobile.pacificaagent.ui.topupsaldo.DepositViewModel
+import com.mobile.pacificaagent.ui.viewmodel.ProdukPascabayarViewModel
 import com.mobile.pacificaagent.ui.viewmodel.ProdukPrabayarViewModel
 import com.mobile.pacificaagent.ui.viewmodel.TopUpPrabayarViewModel
 import com.mobile.pacificaagent.utils.UserPreference
@@ -23,6 +25,7 @@ class ViewModelFactory(
     private val produkPrabayarRepository: ProdukPrabayarRepository,
     private val depositRepository: DepositRepository,
     private val topUpPrabayarRepository: TopUpPrabayarRepository,
+    private val produkPascabayarRepository: ProdukPascabayarRepository
 
 ) : ViewModelProvider.Factory {
 
@@ -49,6 +52,11 @@ class ViewModelFactory(
                 TopUpPrabayarViewModel(topUpPrabayarRepository) as T
             }
 
+            modelClass.isAssignableFrom(ProdukPascabayarViewModel::class.java) -> {
+                ProdukPascabayarViewModel(produkPascabayarRepository) as T
+            }
+
+
             else -> throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
         }
     }
@@ -66,7 +74,9 @@ class ViewModelFactory(
                     userPref,
                     Injection.provideProdukPrabayarRepository(context),
                     Injection.provideDepositRepository(context),
-                    Injection.provideTopUpPrabayarRepository(context))
+                    Injection.provideTopUpPrabayarRepository(context),
+                    Injection.provideProdukPascabayarRepository(context),
+                )
             }.also { instance = it }
     }
 }

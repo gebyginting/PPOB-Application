@@ -79,7 +79,10 @@
             app:destination="@id/konfirmasiWifiFragment" >
         </action>
         <argument
-            android:name="namaProvider"
+            android:name="operatorId"
+            app:argType="string" />
+        <argument
+            android:name="operatorName"
             app:argType="string" />
     </fragment>
 
@@ -132,11 +135,9 @@
         android:label="Konfirmasi Wifi"
         tools:layout="@layout/fragment_konfirmasi_wifi" >
         <argument
-            android:name="namaProvider"
-            app:argType="string" />
-        <argument
-            android:name="hargaTagihan"
-            app:argType="string" />
+            android:name="topUpRequest"
+            app:argType="com.mobile.pacificaagent.data.request.pascabayar.TopUpWifiRequest"
+            app:nullable="false" />
     </fragment>
 
     <fragment

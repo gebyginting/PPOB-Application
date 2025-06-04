@@ -18,9 +18,9 @@ class EWalletPilihFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val dataPilihan = listOf(
-        PilihanItem(R.drawable.ic_ewallet, "DANA"),
-        PilihanItem(R.drawable.ic_ewallet, "OVO"),
-        PilihanItem(R.drawable.ic_ewallet, "GOPAY")
+        PilihanItem(imgUrl = R.drawable.ic_ewallet, nama = "DANA"),
+        PilihanItem(imgUrl = R.drawable.ic_ewallet, nama ="OVO"),
+        PilihanItem(imgUrl = R.drawable.ic_ewallet, nama ="GOPAY")
     )
 
     override fun onCreateView(

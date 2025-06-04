@@ -5,6 +5,7 @@ import com.mobile.pacificaagent.data.request.DepositRequest
 import com.mobile.pacificaagent.data.request.LoginRequest
 import com.mobile.pacificaagent.data.request.RegisterRequest
 import com.mobile.pacificaagent.data.request.UpdateProfileRequest
+import com.mobile.pacificaagent.data.request.pascabayar.TopUpWifiRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpDataRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpEWalletRequest
 import com.mobile.pacificaagent.data.request.prabayar.TopUpPulsaRequest
@@ -17,6 +18,9 @@ import com.mobile.pacificaagent.data.response.LoginResponse
 import com.mobile.pacificaagent.data.response.ProdukPrabayarResponse
 import com.mobile.pacificaagent.data.response.RegisterUpdateResponse
 import com.mobile.pacificaagent.data.response.UserProfileResponse
+import com.mobile.pacificaagent.data.response.pascabayar.GetWifiProvidersResponse
+import com.mobile.pacificaagent.data.response.pascabayar.TagihanWifiResponse
+import com.mobile.pacificaagent.data.response.pascabayar.TopUpWifiResponse
 import com.mobile.pacificaagent.data.response.prabayar.TopUpEWalletResponse
 import com.mobile.pacificaagent.data.response.prabayar.TopUpPulsaResponse
 import com.mobile.pacificaagent.data.response.prabayar.TopUpTokenResponse
@@ -59,7 +63,7 @@ interface ApiService {
     suspend fun getHistoryDetail(@Path("id") id: String): Response<HistoryDetailResponse>
 
     // PRODUK PRABAYAR
-    @GET("/api/users/produk-prabayar/{category_id}")
+    @GET("/api/users/operator-prabayar/{category_id}")
     suspend fun produkPrabayar(
         @Path("category_id") categoryId: String,
         @Query("number") number: String
@@ -96,4 +100,19 @@ interface ApiService {
     suspend fun topupEWallet(
         @Body requestBody: TopUpEWalletRequest
     ): Response<TopUpEWalletResponse>
+
+    // PRODUK PASCABAYAR
+    @GET("/api/users/wifi/providers")
+    suspend fun getWifiProviders(): Response<GetWifiProvidersResponse>
+
+    @GET("/api/users/wifi/bills/{operator_id}")
+    suspend fun getTagihanWifi(
+        @Path("operator_id") operatorId: String,
+        @Query("pelanggan_id") pelangganId: String
+    ): Response<TagihanWifiResponse>
+
+    @POST("/api/users//wifi/pay")
+    suspend fun topupWifi(
+        @Body requestBody: TopUpWifiRequest
+    ): Response<TopUpWifiResponse>
 }
